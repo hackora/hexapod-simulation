@@ -4,6 +4,7 @@
 
 #include<collision_library.h>
 #include "simulator.h"
+#include "cube.h"
 
 //// hidmanager
 //#include "hidmanager/defaulthidmanager.h"
@@ -69,7 +70,7 @@ void Scenario::initializeScenario() {
 
 
   // Surface visualizers
-  auto surface_visualizer = new GMlib::PSurfDefaultVisualizer<float,3>;
+  //auto surface_visualizer = new GMlib::PSurfDefaultVisualizer<float,3>;
 
   // Surface
 //  auto surface = new TestTorus;
@@ -87,210 +88,112 @@ void Scenario::initializeScenario() {
 //    sphere->setMaterial(GMlib::GMmaterial::sapphire());
 //    scene()->insert(sphere);
 
+   //Hexapod body
+
+   auto body = new Cube( GMlib::Point<float,3>(0.0f,0.0f,0.0f) ,1,2,5);
+   body->toggleDefaultVisualizer();
+   body->replot(10,10,1,1);
+   body->setMaterial(GMlib::GMmaterial::blackRubber());
+   body->insert(scene()); // This line inserts cube to the scene; can't do scene()->insert(cube) because cube is not a scene object
+
+   //Hexapod coxaL1
+
+   auto coxaL1 = new Cube( GMlib::Point<float,3>(1.0f,0.0f,2.0f) ,0.5,0.5,0.5);
+   coxaL1->toggleDefaultVisualizer();
+   coxaL1->replot(10,10,1,1);
+   coxaL1->setMaterial(GMlib::GMmaterial::sapphire());
+   coxaL1->insert(scene()); // This line inserts cube to the scene; can't do scene()->insert(cube) because cube is not a scene object
+
+   //Hexapod coxaL2
+
+   auto coxaL2 = new Cube( GMlib::Point<float,3>(1.0f,0.0f,0.0f) ,0.5,0.5,0.5);
+   coxaL2->toggleDefaultVisualizer();
+   coxaL2->replot(10,10,1,1);
+   coxaL2->setMaterial(GMlib::GMmaterial::sapphire());
+   coxaL2->insert(scene()); // This line inserts cube to the scene; can't do scene()->insert(cube) because cube is not a scene object
+
+   //Hexapod coxaL3
+
+   auto coxaL3 = new Cube( GMlib::Point<float,3>(1.0f,0.0f,-2.0f) ,0.5,0.5,0.5);
+   coxaL3->toggleDefaultVisualizer();
+   coxaL3->replot(10,10,1,1);
+   coxaL3->setMaterial(GMlib::GMmaterial::sapphire());
+   coxaL3->insert(scene()); // This line inserts cube to the scene; can't do scene()->insert(cube) because cube is not a scene object
+
+   //Hexapod coxaR1
+
+   auto coxaR1 = new Cube( GMlib::Point<float,3>(-1.0f,0.0f,2.0f) ,0.5,0.5,0.5);
+   coxaR1->toggleDefaultVisualizer();
+   coxaR1->replot(10,10,1,1);
+   coxaR1->setMaterial(GMlib::GMmaterial::sapphire());
+   coxaR1->insert(scene()); // This line inserts cube to the scene; can't do scene()->insert(cube) because cube is not a scene object
+
+   //Hexapod coxaR2
+
+   auto coxaR2 = new Cube( GMlib::Point<float,3>(-1.0f,0.0f,0.0f) ,0.5,0.5,0.5);
+   coxaR2->toggleDefaultVisualizer();
+   coxaR2->replot(10,10,1,1);
+   coxaR2->setMaterial(GMlib::GMmaterial::sapphire());
+   coxaR2->insert(scene()); // This line inserts cube to the scene; can't do scene()->insert(cube) because cube is not a scene object
+
+   //Hexapod coxaR3
+
+   auto coxaR3 = new Cube( GMlib::Point<float,3>(-1.0f,0.0f,-2.0f) ,0.5,0.5,0.5);
+   coxaR3->toggleDefaultVisualizer();
+   coxaR3->replot(10,10,1,1);
+   coxaR3->setMaterial(GMlib::GMmaterial::sapphire());
+   coxaR3->insert(scene()); // This line inserts cube to the scene; can't do scene()->insert(cube) because cube is not a scene object
 
 
-  //box
+   //Hexapod fumurL1
 
-  auto b = 2.0f;
-  auto w = 1.0f;
-  auto h = 5.0f;
-  auto com = GMlib::Point<float,3>(0.0f, 0.0f, 0.0f);
+   auto fumurL1 = new Cube( GMlib::Point<float,3>(2.25f,0.0f,2.0f) ,0.25,2.0,0.5);
+   fumurL1->toggleDefaultVisualizer();
+   fumurL1->replot(10,10,1,1);
+   fumurL1->setMaterial(GMlib::GMmaterial::ruby());
+   fumurL1->insert(scene()); // This line inserts cube to the scene; can't do scene()->insert(cube) because cube is not a scene object
 
-     auto plane1 =new Plane(
-                com+ GMlib::Vector<float,3>(0.5*b, 0.5*w, -0.5*h),
-                 GMlib::Vector<float,3>(0.0f, -w, 0.0f),
-                 GMlib::Vector<float,3>(-b, 0.0f, 0.0f));
+   //Hexapod femurL2
 
-     plane1->setMaterial(GMlib::GMmaterial::sapphire());
+   auto femurL2 = new Cube( GMlib::Point<float,3>(2.25f,0.0f,0.0f) ,0.25,2.0,0.5);
+   femurL2->toggleDefaultVisualizer();
+   femurL2->replot(10,10,1,1);
+   femurL2->setMaterial(GMlib::GMmaterial::ruby());
+   femurL2->insert(scene()); // This line inserts cube to the scene; can't do scene()->insert(cube) because cube is not a scene object
 
-     auto plane2 =new Plane(
-                 com+ GMlib::Vector<float,3>(0.5*b, 0.5*w, 0.5*h),
-                 GMlib::Vector<float,3>(0.0f, -w, 0.0f),
-                 GMlib::Vector<float,3>(-b, 0.0f, 0.0f));
+   //Hexapod femurL3
 
-      plane2->setMaterial(GMlib::GMmaterial::sapphire());
+   auto femurL3 = new Cube( GMlib::Point<float,3>(2.25f,0.0f,-2.0f) ,0.25,2.0,0.5);
+   femurL3->toggleDefaultVisualizer();
+   femurL3->replot(10,10,1,1);
+   femurL3->setMaterial(GMlib::GMmaterial::ruby());
+   femurL3->insert(scene()); // This line inserts cube to the scene; can't do scene()->insert(cube) because cube is not a scene object
 
-      auto plane3 =new Plane(
-                  com+ GMlib::Vector<float,3>(0.5*b, 0.5*w, -0.5*h),
-                  GMlib::Vector<float,3>(0.0f, -w, 0.0f),
-                  GMlib::Vector<float,3>(0.0, 0.0f, h));
+   //Hexapod femurR1
 
-      plane3->setMaterial(GMlib::GMmaterial::sapphire());
+   auto femurR1 = new Cube( GMlib::Point<float,3>(-2.25f,0.0f,2.0f) ,0.25,2.0,0.5);
+   femurR1->toggleDefaultVisualizer();
+   femurR1->replot(10,10,1,1);
+   femurR1->setMaterial(GMlib::GMmaterial::ruby());
+   femurR1->insert(scene()); // This line inserts cube to the scene; can't do scene()->insert(cube) because cube is not a scene object
 
-      auto plane4 =new Plane(
-                 com + GMlib::Vector<float,3>(0.5*b, 0.5*w, -0.5*h),
-                  GMlib::Vector<float,3>(-b, 0.0f, 0.0f),
-                  GMlib::Vector<float,3>(0.0f, 0.0f, h));
+   //Hexapod femurR2
 
-      plane4->setMaterial(GMlib::GMmaterial::sapphire());
+   auto femurR2 = new Cube( GMlib::Point<float,3>(-2.25f,0.0f,0.0f) ,0.25,2.0,0.5);
+   femurR2->toggleDefaultVisualizer();
+   femurR2->replot(10,10,1,1);
+   femurR2->setMaterial(GMlib::GMmaterial::ruby());
+   femurR2->insert(scene()); // This line inserts cube to the scene; can't do scene()->insert(cube) because cube is not a scene object
 
-      auto plane5 = new Plane (
-                 com+ GMlib::Vector<float,3>(-0.5*b, -0.5*w, -0.5*h),
-                  GMlib::Vector<float,3>(0.0f,w, 0.0f),
-                  GMlib::Vector<float,3>(0.0f, 0.0f, h));
+   //Hexapod femurR3
 
-      plane5->setMaterial(GMlib::GMmaterial::sapphire());
-
-      auto plane6 = new Plane (
-                  com +GMlib::Vector<float,3>(-0.5*b, -0.5*w, -0.5*h),
-                  GMlib::Vector<float,3>(b, 0.0f, 0.0f),
-                  GMlib::Vector<float,3>(0.0f, 0.0f, h));
-
-      plane6->setMaterial(GMlib::GMmaterial::sapphire());
-
-
-      plane1->toggleDefaultVisualizer();
-      plane1->replot(10,10,1,1);
-      scene()->insert(plane1);
-
-      plane2->toggleDefaultVisualizer();
-      plane2->replot(10,10,1,1);
-      scene()->insert(plane2);
-
-      plane3->toggleDefaultVisualizer();
-      plane3->replot(10,10,1,1);
-      scene()->insert(plane3);
-
-      plane4->toggleDefaultVisualizer();
-      plane4->replot(10,10,1,1);
-      scene()->insert(plane4);
-
-      plane5->toggleDefaultVisualizer();
-      plane5->replot(10,10,1,1);
-      scene()->insert(plane5);
-
-      plane6->toggleDefaultVisualizer();
-      plane6->replot(10,10,1,1);
-      scene()->insert(plane6);
-
-  //Leg5
-
-    auto joint51 = new GMlib::PSphere<float>(1);
-      joint51->toggleDefaultVisualizer();
-      joint51->replot(20,20,1,1);
-      joint51->translateGlobal(GMlib::Vector<float,3>{5.0f,0.0f,0.0f});
-      joint51->setMaterial(GMlib::GMmaterial::emerald());
-      scene()->insert(joint51);
-
-   auto coxa5 = new GMlib::PLine<float>(GMlib::Point<float,3>(6.0f, 0.0f, 0.0f ), GMlib::Vector<float,3>(2.0f, 0.0f, 0.0f ));
-   coxa5->toggleDefaultVisualizer();
-   coxa5->replot(10,10);
-   coxa5->setMaterial(GMlib::GMmaterial::ruby());
-   scene()->insert(coxa5);
-
-   auto joint52 = new GMlib::PSphere<float>(1);
-     joint52->toggleDefaultVisualizer();
-     joint52->replot(20,20,1,1);
-     joint52->translateGlobal(GMlib::Vector<float,3>{9.0f,0.0f,0.0f});
-     joint52->setMaterial(GMlib::GMmaterial::emerald());
-     scene()->insert(joint52);
-
-   auto femur5 = new GMlib::PLine<float>(GMlib::Point<float,3>(10.0f, 0.0f, 0.0f ), GMlib::Vector<float,3>(2.0f, 0.0f, 0.0f ));
-   femur5->toggleDefaultVisualizer();
-   femur5->replot(10,10);
-   femur5->setMaterial(GMlib::GMmaterial::ruby());
-   scene()->insert(femur5);
-
-   auto joint53 = new GMlib::PSphere<float>(1);
-     joint53->toggleDefaultVisualizer();
-     joint53->replot(20,20,1,1);
-     joint53->translateGlobal(GMlib::Vector<float,3>{13.0f,0.0f,0.0f});
-     joint53->setMaterial(GMlib::GMmaterial::emerald());
-     scene()->insert(joint53);
-
-   auto tibia5 = new GMlib::PLine<float>(GMlib::Point<float,3>(14.0f, 0.0f, 0.0f ), GMlib::Vector<float,3>(2.0f, 0.0f, 0.0f ));
-   tibia5->toggleDefaultVisualizer();
-   tibia5->replot(10,10);
-   tibia5->setMaterial(GMlib::GMmaterial::ruby());
-   scene()->insert(tibia5);
-
-
-   //Leg2
-
-//     auto joint21 = new GMlib::PSphere<float>(1);
-//       joint21->toggleDefaultVisualizer();
-//       joint21->replot(20,20,1,1);
-//       joint21->translateGlobal(GMlib::Vector<float,3>{-5.0f,0.0f,0.0f});
-//       joint21->setMaterial(GMlib::GMmaterial::emerald());
-//       scene()->insert(joint21);
-
-//    auto coxa2 = new GMlib::PLine<float>(GMlib::Point<float,3>(-6.0f, 0.0f, 0.0f ), GMlib::Vector<float,3>(-2.0f, 0.0f, 0.0f ));
-//    coxa2->toggleDefaultVisualizer();
-//    coxa2->replot(10,10);
-//    coxa2->setMaterial(GMlib::GMmaterial::ruby());
-//    scene()->insert(coxa2);
-
-//    auto joint22 = new GMlib::PSphere<float>(1);
-//      joint22->toggleDefaultVisualizer();
-//      joint22->replot(20,20,1,1);
-//      joint22->translateGlobal(GMlib::Vector<float,3>{-9.0f,0.0f,0.0f});
-//      joint22->setMaterial(GMlib::GMmaterial::emerald());
-//      scene()->insert(joint22);
-
-//    auto femur2 = new GMlib::PLine<float>(GMlib::Point<float,3>(-10.0f, 0.0f, 0.0f ), GMlib::Vector<float,3>(-2.0f, 0.0f, 0.0f ));
-//    femur2->toggleDefaultVisualizer();
-//    femur2->replot(10,10);
-//    femur2->setMaterial(GMlib::GMmaterial::ruby());
-//    scene()->insert(femur2);
-
-//    auto joint23 = new GMlib::PSphere<float>(1);
-//      joint23->toggleDefaultVisualizer();
-//      joint23->replot(20,20,1,1);
-//      joint23->translateGlobal(GMlib::Vector<float,3>{-13.0f,0.0f,0.0f});
-//      joint23->setMaterial(GMlib::GMmaterial::emerald());
-//      scene()->insert(joint23);
-
-//    auto tibia2 = new GMlib::PLine<float>(GMlib::Point<float,3>(-14.0f, 0.0f, 0.0f ), GMlib::Vector<float,3>(-2.0f, 0.0f, 0.0f ));
-//    tibia2->toggleDefaultVisualizer();
-//    tibia2->replot(10,10);
-//    tibia2->setMaterial(GMlib::GMmaterial::ruby());
-//    scene()->insert(tibia2);
-
-
-    //Leg4
-
-//      auto joint41 = new GMlib::PSphere<float>(1);
-//        joint41->toggleDefaultVisualizer();
-//        joint41->replot(20,20,1,1);
-//        joint41->translateGlobal(GMlib::Vector<float,3>{4.0f,3.0f,0.0f});
-//        joint41->setMaterial(GMlib::GMmaterial::emerald());
-//        scene()->insert(joint41);
-
-//     auto coxa5 = new GMlib::PLine<float>(GMlib::Point<float,3>(6.0f, 0.0f, 0.0f ), GMlib::Vector<float,3>(2.0f, 0.0f, 0.0f ));
-//     coxa5->toggleDefaultVisualizer();
-//     coxa5->replot(10,10);
-//     coxa5->setMaterial(GMlib::GMmaterial::ruby());
-//     scene()->insert(coxa5);
-
-//     auto joint52 = new GMlib::PSphere<float>(1);
-//       joint52->toggleDefaultVisualizer();
-//       joint52->replot(20,20,1,1);
-//       joint52->translateGlobal(GMlib::Vector<float,3>{9.0f,0.0f,0.0f});
-//       joint52->setMaterial(GMlib::GMmaterial::emerald());
-//       scene()->insert(joint52);
-
-//     auto femur5 = new GMlib::PLine<float>(GMlib::Point<float,3>(10.0f, 0.0f, 0.0f ), GMlib::Vector<float,3>(2.0f, 0.0f, 0.0f ));
-//     femur5->toggleDefaultVisualizer();
-//     femur5->replot(10,10);
-//     femur5->setMaterial(GMlib::GMmaterial::ruby());
-//     scene()->insert(femur5);
-
-//     auto joint53 = new GMlib::PSphere<float>(1);
-//       joint53->toggleDefaultVisualizer();
-//       joint53->replot(20,20,1,1);
-//       joint53->translateGlobal(GMlib::Vector<float,3>{13.0f,0.0f,0.0f});
-//       joint53->setMaterial(GMlib::GMmaterial::emerald());
-//       scene()->insert(joint53);
-
-//     auto tibia5 = new GMlib::PLine<float>(GMlib::Point<float,3>(14.0f, 0.0f, 0.0f ), GMlib::Vector<float,3>(2.0f, 0.0f, 0.0f ));
-//     tibia5->toggleDefaultVisualizer();
-//     tibia5->replot(10,10);
-//     tibia5->setMaterial(GMlib::GMmaterial::ruby());
-//     scene()->insert(tibia5);
-
+   auto femurR3 = new Cube( GMlib::Point<float,3>(-2.25f,0.0f,-2.0f) ,0.25,2.0,0.5);
+   femurR3->toggleDefaultVisualizer();
+   femurR3->replot(10,10,1,1);
+   femurR3->setMaterial(GMlib::GMmaterial::ruby());
+   femurR3->insert(scene()); // This line inserts cube to the scene; can't do scene()->insert(cube) because cube is not a scene object
 
 }
 
 void Scenario::cleanupScenario() {
-
 }
