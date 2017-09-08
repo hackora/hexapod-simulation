@@ -14,7 +14,7 @@ if(MSVC)
   message("Compiler: ${CMAKE_CXX_COMPILER_ID}")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   message("Compiler: ${CMAKE_CXX_COMPILER_ID}")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Werror")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall ")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   message("Compiler: ${CMAKE_CXX_COMPILER_ID}")
 
@@ -43,7 +43,6 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unreachable-code-return")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-macros")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-undefined-reinterpret-cast")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-gnu-statement-expression")
 else()
   message(WARNING "Compiler <${CMAKE_CXX_COMPILER_ID}> is not a supported C++ compiler.")
 endif()
@@ -85,6 +84,24 @@ if(WIN32)
   add_definitions(-DGLEW_STATIC)
 endif(WIN32)
 
+message("COLLISION_INTERFACE_INCLUDE_DIR: ${COLLISION_INTERFACE_INCLUDE_DIR}")
+if(NOT COLLISION_INTERFACE_INCLUDE_DIR)
+  message( FATAL_ERROR "COLLISION_INTERFACE_INCLUDE_DIR not set")
+endif()
+
+
+include_directories(${COLLISION_INTERFACE_INCLUDE_DIR})
+
+message("COLLISION_LIBRARY_INCLUDE_DIR: ${COLLISION_LIBRARY_INCLUDE_DIR}")
+if(NOT COLLISION_LIBRARY_INCLUDE_DIR)
+  message( FATAL_ERROR "COLLISION_LIBRARY_INCLUDE_DIR not set")
+endif()
+
+
+include_directories(${COLLISION_LIBRARY_INCLUDE_DIR})
+
+link_directories(${COLLISION_LIBRARY_DIR})
+link_directories(${COLLISION_LIBRARY_INCLUDE_DIR})
 
 
 
@@ -108,8 +125,10 @@ set( HDRS
   application/window.h
   application/utils.h
 
-  testtorus.h
   scenario.h
+  simulator.h
+  testtorus.h
+  cube.h
   )
 
 set( SRCS
@@ -131,6 +150,8 @@ set( SRCS
   application/main.cpp
 
   scenario.cpp
+  simulator.cpp
+  cube.cpp
   )
 
 #########
@@ -172,6 +193,5 @@ target_link_libraries( ${CMAKE_PROJECT_NAME}
   Qt5::Gui
   ${GLEW_LIBRARIES}
   ${OPENGL_LIBRARIES}
+  ${COLLISION_LIBRARIES}
   )
-
-
