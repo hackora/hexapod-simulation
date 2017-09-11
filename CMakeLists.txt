@@ -129,6 +129,7 @@ set( HDRS
   simulator.h
   testtorus.h
   cube.h
+  tibia.h
   )
 
 set( SRCS
@@ -152,6 +153,7 @@ set( SRCS
   scenario.cpp
   simulator.cpp
   cube.cpp
+  tibia.cpp
   )
 
 #########

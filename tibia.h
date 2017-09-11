@@ -3,24 +3,17 @@
 
 #include<gmParametricsModule>
 #include<memory>
-#include"simulator.h"
 
 
-
-class Tibia{
+class Tibia: public GMlib::PCone<float>{
 
 public:
     Tibia(GMlib::Vector<float,3> pos);
-    void insertPyramid(const std::shared_ptr<GMlib::Scene>& s);
+    Tibia(GMlib::Point<float,3>pos , float r, float h);
     virtual ~Tibia() {}
-
     void setRadius(float);
     void setHeight(float);
 
-private:
-    float radius;
-    float height;
-    GMlib::Vector<float,3> position;
 };
 
 
