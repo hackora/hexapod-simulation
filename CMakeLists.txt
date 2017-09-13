@@ -130,6 +130,7 @@ set( HDRS
   testtorus.h
   cube.h
   tibia.h
+  hexapod.h
   )
 
 set( SRCS
@@ -154,6 +155,7 @@ set( SRCS
   simulator.cpp
   cube.cpp
   tibia.cpp
+  hexapod.cpp
   )
 
 #########
