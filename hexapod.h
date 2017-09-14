@@ -12,7 +12,7 @@ class Hexapod: public GMlib::SceneObject {
     GM_SCENEOBJECT(Hexapod)
 
 public:
-    Hexapod(GMlib::Point<float,3> pos= (0.0f,0.0f,0.0f));
+    Hexapod(GMlib::Point<float,3> pos= {0.0f,0.0f,0.0f} );
     Hexapod(const Hexapod &copy){}
     virtual ~Hexapod() {}
     void setMaterial(const GMlib::Material &bm,const GMlib::Material &cm,const GMlib::Material &fm,const GMlib::Material &tm);

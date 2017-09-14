@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.4)
 
 # Global name of the project
-project(QmlDemo VERSION 0.1.0 LANGUAGES CXX)
+project(Hexapod VERSION 0.1.0 LANGUAGES CXX)
 
 # Specify compiler features
 set(CMAKE_CXX_STANDARD 14)
