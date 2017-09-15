@@ -82,7 +82,7 @@ void Cube::setMaterial(const GMlib::Material& m){
 void Cube::replot(int m1, int m2, int d1, int d2){
 
     for(auto& it:planes){
-        it->replot(m1,m2,d1,d2);
+        it->replot(m1,m2,d1,d2); 
     }
 }
 
@@ -93,7 +93,7 @@ void Cube::toggleDefaultVisualizer(){
     }
 }
 
-void Cube::insert(const std::shared_ptr<GMlib::Scene>& scene){
+void Cube::insertToScene(const std::shared_ptr<GMlib::Scene>& scene) {
 
     for(auto& it:planes){
         scene->insert(it.get());
