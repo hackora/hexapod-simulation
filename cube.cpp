@@ -5,7 +5,7 @@ Cube::Cube(){
     breadth = 1.0f;
     height = 1.0f;
     pos = GMlib::Point<float,3>(0.0f,0.0f,0.0f);
-    constructCube();
+    makeCube();
 }
 
 Cube::Cube(GMlib::Point<float,3>pos , float width, float breadth, float height){
@@ -13,7 +13,7 @@ Cube::Cube(GMlib::Point<float,3>pos , float width, float breadth, float height){
     this->breadth = breadth;
     this->height =height;
     this->pos = pos;
-    constructCube();
+    makeCube();
 
 }
 
@@ -38,7 +38,7 @@ void Cube::setHeight(float h){
     height =h;
 }
 
-void Cube::constructCube(){
+void Cube::makeCube(){
 
     planes.push_back(std::make_unique<Plane>(
                          pos + GMlib::Vector<float,3>(0.5*breadth, 0.5*width, -0.5*height),
@@ -99,47 +99,3 @@ void Cube::insertToScene(const std::shared_ptr<GMlib::Scene>& scene) {
         scene->insert(it.get());
     }
 }
-
-/*! HqMatrix<float,3>& Camera::getMatrix()
- *  \brief Pending Documentation
- *
- *  Pending Documentation
- */
-GMlib::HqMatrix<float,3>& Cube::getMatrix() {
-
-  /*! \todo fix how the matrix is returned */
-  static GMlib::HqMatrix<float,3> retmat;
-  retmat = _matrix;
-  retmat.invertOrthoNormal();
-  return retmat;
-}
-
-
-const GMlib::HqMatrix<float,3>& Cube::getMatrix() const {
-
-  /*! \todo fix how the matrix is returned */
-  static GMlib::HqMatrix<float,3> retmat;
-  retmat = _matrix;
-  retmat.invertOrthoNormal();
-  return retmat;
-}
-
-inline
-void Cube::basisChange( const GMlib::Vector<float,3>& x, const GMlib::Vector<float,3>& y,
-                                                  const GMlib::Vector<float,3>& z, const GMlib::Vector<float,3>& p ) {
-
-    static GMlib::Vector<float,4> nx, ny, nz, nw(0.0f);
-    nx = -x;
-    ny =  y;
-    nz = -z;
-
-    nx[3] = x*p;
-    ny[3] = -(y*p);
-    nz[3] = z*p;
-    nw[3] = 1.0f;
-
-    _matrix.setRow( nx, 0 );
-    _matrix.setRow( ny, 1 );
-    _matrix.setRow( nz, 2 );
-    _matrix.setRow( nw, 3 );
-  }

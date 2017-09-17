@@ -126,7 +126,6 @@ set( HDRS
   application/utils.h
 
   scenario.h
-  simulator.h
   testtorus.h
   cube.h
   tibia.h
@@ -152,7 +151,6 @@ set( SRCS
   application/main.cpp
 
   scenario.cpp
-  simulator.cpp
   cube.cpp
   tibia.cpp
   hexapod.cpp

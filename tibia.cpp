@@ -2,7 +2,7 @@
 
 Tibia::Tibia(GMlib::Vector<float,3> pos){
     // Start values
-    _r = 0.09f;
+    _r = 0.2f;
     _h = 1.5f;
     translateGlobal(pos);
 }
