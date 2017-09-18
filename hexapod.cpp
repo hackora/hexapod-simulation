@@ -132,14 +132,18 @@ void Hexapod::adjustPositions(){
     joints[17]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -0.8f ) );
 
     for(unsigned int i= 2; i <= 8; i += 3){
-
         joints[i]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, -1.0f, 0.0f ) );
     }
 
     for(unsigned int i = 11; i < joints.size(); i += 3){
         joints[i]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ) );
-
     }
+
+    float angle = 45.0f;
+    joints[0]->rotate( GMlib::Angle(-angle), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
+    joints[6]->rotate( GMlib::Angle(angle), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
+    joints[9]->rotate( GMlib::Angle(angle), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
+    joints[15]->rotate( GMlib::Angle(-angle), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
 
 
     for(unsigned int i= 0;i<3;i++){
