@@ -1,9 +1,4 @@
 #include "scenario.h"
-
-#include "testtorus.h"
-
-#include<collision_library.h>
-#include "simulator.h"
 #include "hexapod.h"
 
 //// hidmanager
@@ -71,8 +66,8 @@ void Scenario::initializeScenario() {
 
   hexapod->toggleDefaultVisualizer();
   hexapod->replot();
-  hexapod->setMaterial(GMlib::GMmaterial::blackRubber(),GMlib::GMmaterial::sapphire(),
-                                   GMlib::GMmaterial::ruby(),GMlib::GMmaterial::jade());
+  hexapod->setMaterial(GMlib::GMmaterial::blackPlastic(),GMlib::GMmaterial::sapphire(),
+                                   GMlib::GMmaterial::ruby(),GMlib::GMmaterial::blackRubber(),GMlib::GMmaterial::snow());
   hexapod->insert(scene());
 
 }

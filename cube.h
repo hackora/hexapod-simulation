@@ -3,7 +3,10 @@
 
 #include<gmParametricsModule>
 #include<memory>
-#include"simulator.h"
+#include<collision_library.h>
+
+using Plane = collision::StaticPhysObject<GMlib::PPlane<float>>;
+
 
   class Cube : public GMlib::SceneObject {
       GM_SCENEOBJECT(Cube)
@@ -19,10 +22,7 @@
         void setMaterial(const GMlib::Material &m);
         void replot(int m1=10, int m2=10, int d1=1, int d2=1);
         void toggleDefaultVisualizer();
-        void insert(const std::shared_ptr<GMlib::Scene>&scene);
-        GMlib::HqMatrix<float,3>& getMatrix() override;
-        const GMlib::HqMatrix<float,3>& getMatrix() const override;
-        void basisChange( const GMlib::Vector<float,3>& x, const GMlib::Vector<float,3>& y, const GMlib::Vector<float,3>& z, const GMlib::Vector<float,3>& p) override;
+        void insertToScene(const std::shared_ptr<GMlib::Scene>&scene);
 
     protected:
         float width ;
@@ -33,7 +33,7 @@
 
 
     private:
-        void constructCube();
+        void makeCube();
 
     };
 
