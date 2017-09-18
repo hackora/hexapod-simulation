@@ -6,7 +6,7 @@
 
 #include"cube.h"
 #include"tibia.h"
-
+#include "leg.h"
 
 class Hexapod: public GMlib::SceneObject {
     GM_SCENEOBJECT(Hexapod)
@@ -19,24 +19,25 @@ public:
     void replot(int m1=20, int m2=20, int d1=1, int d2=1);
     void toggleDefaultVisualizer();
     void insert(const std::shared_ptr<GMlib::Scene>&scene);
+    void forward(double dt);
+
+    Angles inverseKinematics(GMlib::Point<float,3> oldPos, GMlib::Point<float,3> newPos);
+
 
 protected:
     std::shared_ptr<GMlib::PCylinder<float>> body;
-    std::vector<std::shared_ptr< GMlib::PCylinder<float>>> coxas;  //6
-    std::vector<std::shared_ptr<GMlib::PCylinder<float>>> femurs; //6
-    std::vector<std::shared_ptr<GMlib::PCone<float>>> tibias; //6
-    std::vector<std::shared_ptr< GMlib::PSphere<float>>> joints;    // 3*6 = 18
+    std::vector<std::shared_ptr<Leg>> legs;    // 6
+
+    void localSimulate (double dt) override;
 
 private:
     void makeBody(GMlib::Point<float, 3> pos);
-    void makeCoxas();
-    void makeFemurs();
-    void makeTibias();
-    void makeJoints();
+    void makeLegs(GMlib::Point<float, 3> pos);
+
     void adjustPositions();
     void link();
 
-
+    int leg = 0;
 };
 
 

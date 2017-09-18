@@ -3,12 +3,14 @@
 
 #include<gmParametricsModule>
 #include<memory>
+#include "tibia.h"
 
 struct Angles {
 
     GMlib::Angle alpha;
     GMlib::Angle beta;
     GMlib::Angle gamma;
+    Angles(GMlib::Angle a, GMlib::Angle b, GMlib::Angle g) {alpha = a; beta = b; gamma = g; }
 };
 
 
@@ -30,13 +32,13 @@ class Leg: public  GMlib::SceneObject {
         std::vector<std::shared_ptr<GMlib::PSphere<float>>> getJoints();
         std::shared_ptr<GMlib::PCylinder<float>> getCoxa();
         std::shared_ptr<GMlib::PCylinder<float>> getFemur();
-        std::shared_ptr<GMlib::PCone<float>> getTibia();
+        std::shared_ptr<Tibia> getTibia();
 
 
     protected:
         std::shared_ptr< GMlib::PCylinder<float>> coxa;
         std::shared_ptr<GMlib::PCylinder<float>> femur;
-        std::shared_ptr<GMlib::PCone<float>> tibia;
+        std::shared_ptr<Tibia> tibia;
         std::vector<std::shared_ptr< GMlib::PSphere<float>>> joints;    // 3
 
 

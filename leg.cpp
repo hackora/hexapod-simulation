@@ -71,7 +71,7 @@ void Leg::makeFemur()
 
 void Leg::makeTibia()
 {
-    tibia = std::make_shared<GMlib::PCone<float>>(0.2f,1.0f);
+    tibia = std::make_shared<Tibia>(0.2f,1.0f);
 }
 
 void Leg::makeJoints()
@@ -145,6 +145,20 @@ void Leg::link()
 
 Angles Leg::inverseKinematics(GMlib::Point<float, 3> oldPos, GMlib::Point<float, 3> newPos)
 {
+    auto legLength = std::sqrt( std::pow( (oldPos(0) - joints[0]->getPos()(0)), 2) + std::pow( (oldPos(2) - joints[0]->getPos()(2)), 2) );
+    auto L = std::sqrt( std::pow( legLength - coxa->getHeight(),2 ) + std::pow( (oldPos(1) - joints[0]->getPos()(1)), 2)  );
+
+    auto beta1 = std::atan2( (legLength - coxa->getHeight()),(oldPos(1) - joints[0]->getPos()(1)) );
+    auto beta2 = std::acos( (legLength*legLength - femur->getHeight()*femur->getHeight() - L*L) / (-2 * femur->getHeight() * L) );
+    auto beta = 90 - beta1 - beta2;
+
+    auto gamma = 90 - std::acos( (legLength*legLength - tibia->getHeight()*tibia->getHeight() - femur->getHeight()*femur->getHeight())
+                                / (-2 * femur->getHeight() * tibia->getHeight() ) );
+
+    auto alpha = std::atan2( (oldPos(2) - joints[0]->getPos()(2)) , (oldPos(0) - joints[0]->getPos()(0)) );
+
+    auto angle = Angles(alpha, beta, gamma);
+    return angle;
 
 }
 
@@ -166,7 +180,7 @@ std::shared_ptr<GMlib::PCylinder<float> > Leg::getFemur()
 }
 
 
-std::shared_ptr<GMlib::PCone<float> >  Leg::getTibia()
+std::shared_ptr<Tibia >  Leg::getTibia()
 {
     return tibia;
 }
