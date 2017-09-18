@@ -130,6 +130,7 @@ set( HDRS
   cube.h
   tibia.h
   hexapod.h
+  leg.h
   )
 
 set( SRCS
@@ -154,6 +155,7 @@ set( SRCS
   cube.cpp
   tibia.cpp
   hexapod.cpp
+  leg.cpp
   )
 
 #########

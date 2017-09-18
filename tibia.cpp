@@ -8,11 +8,10 @@ Tibia::Tibia(GMlib::Vector<float,3> pos){
 }
 
 
-Tibia::Tibia(GMlib::Point<float,3>pos , float r, float h){
+Tibia::Tibia(float r, float h){
 
     _r = r;
     _h = h;
-    translateGlobal(pos);
 }
 
 void Tibia::setRadius(float r)
@@ -23,4 +22,9 @@ void Tibia::setRadius(float r)
 void Tibia::setHeight(float h){
 
     _h = h;
+}
+
+float Tibia::getHeight() {
+
+    return _h;
 }

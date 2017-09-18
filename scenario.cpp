@@ -1,6 +1,8 @@
 #include "scenario.h"
 #include "hexapod.h"
 
+#include "testtorus.h"
+
 //// hidmanager
 //#include "hidmanager/defaulthidmanager.h"
 
@@ -69,6 +71,18 @@ void Scenario::initializeScenario() {
   hexapod->setMaterial(GMlib::GMmaterial::blackPlastic(),GMlib::GMmaterial::sapphire(),
                                    GMlib::GMmaterial::ruby(),GMlib::GMmaterial::blackRubber(),GMlib::GMmaterial::snow());
   hexapod->insert(scene());
+
+//  // Surface visualizers
+//  auto surface_visualizer = new GMlib::PSurfNormalsVisualizer<float,3>;
+
+//  // Surface
+//  auto surface = new TestTorus;
+//  surface->toggleDefaultVisualizer();
+//  surface->insertVisualizer(surface_visualizer);
+//  surface->replot(200,200,1,1);
+//  scene()->insert(surface);
+
+//  surface->test01();
 
 }
 
