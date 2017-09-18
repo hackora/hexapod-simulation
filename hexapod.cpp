@@ -107,6 +107,7 @@ void Hexapod::adjustPositions(){
 
     body ->rotate( GMlib::Angle(90), GMlib::Vector<float,3>( 0.0f, 0.0f, 1.0f ) );
     body->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f ) );
+    body->rotateGlobal( GMlib::Angle(90), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f ));
 
 
     joints[0]->translate( GMlib::Vector<float,3>( 0.0f, 1.5f, 1.0f ) );
@@ -129,6 +130,16 @@ void Hexapod::adjustPositions(){
     joints[11]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -0.8f ) );
     joints[14]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -0.8f ) );
     joints[17]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -0.8f ) );
+
+    for(unsigned int i= 2; i <= 8; i += 3){
+
+        joints[i]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, -1.0f, 0.0f ) );
+    }
+
+    for(unsigned int i = 11; i < joints.size(); i += 3){
+        joints[i]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ) );
+
+    }
 
 
     for(unsigned int i= 0;i<3;i++){
