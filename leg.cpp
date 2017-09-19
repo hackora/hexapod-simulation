@@ -84,8 +84,6 @@ void Leg::makeJoints()
 void Leg::adjustPositions()
 {
 
-    if(right) {
-
         // Joint between Body and Coxas
         joints[0]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 1.0f ) );
 
@@ -94,35 +92,20 @@ void Leg::adjustPositions()
 
         // Joint between Femur and Tibia
         joints[2]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 0.8f ) );
+
         // Rotate Tibia joint - pointing down
         joints[2]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, -1.0f, 0.0f ) );
 
-    }
-    else {
-        // Joint between Body and Coxas
-        joints[0]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -1.0f ) );
-
-        // Joint between Coxas and Femur
-        joints[1]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -0.5f ) );
-
-        // Joint between Femur and Tibia
-        joints[2]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -0.8f ) );
-        // Rotate Tibia Joint
-        joints[2]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ) );
-    }
-
-    if(right) {
         coxa->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 0.5f ) );
         femur->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 0.8f ));
         tibia->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 1.0f ));
-    }
 
-    else {
-        coxa->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -0.5f ) );
-        femur->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -0.8f ));
-        tibia->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -1.0f ));
-        tibia->rotate( GMlib::Angle(180), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f ) );
-    }
+        if(!right) {
+
+            joints[0]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -2.0f ) );
+            joints[0]->rotate( GMlib::Angle(180), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f ) );
+
+        }
 }
 
 void Leg::link()
@@ -143,21 +126,29 @@ void Leg::link()
     }
 }
 
+// Don't need old position, but can be useful to keep for checking distance, too big distance is bad.
+// But if dt is small enough, the movements are small enough that they might be fine
+// Need to validate the angles, to make sure they are valid
+// Add newDirection vector, as the direction of the leg needs to be valid
+// Børre suggest generalizing the names of alpha, beta, gamma
+
 Angles Leg::inverseKinematics(GMlib::Point<float, 3> oldPos, GMlib::Point<float, 3> newPos)
 {
-    auto legLength = std::sqrt( std::pow( (oldPos(0) - joints[0]->getPos()(0)), 2) + std::pow( (oldPos(2) - joints[0]->getPos()(2)), 2) );
-    auto L = std::sqrt( std::pow( legLength - coxa->getHeight(),2 ) + std::pow( (oldPos(1) - joints[0]->getPos()(1)), 2)  );
+    auto legLength = std::sqrt( std::pow( (newPos(0) - joints[0]->getPos()(0)), 2) + std::pow( (newPos(2) - joints[0]->getPos()(2)), 2) );
+    auto L = std::sqrt( std::pow( legLength - coxa->getHeight(),2 ) + std::pow( (newPos(1) - joints[0]->getPos()(1)), 2)  );
 
-    auto beta1 = std::atan2( (legLength - coxa->getHeight()),(oldPos(1) - joints[0]->getPos()(1)) );
+    auto beta1 = std::atan2( (legLength - coxa->getHeight()),(newPos(1) - joints[0]->getPos()(1)) );
     auto beta2 = std::acos( (legLength*legLength - femur->getHeight()*femur->getHeight() - L*L) / (-2 * femur->getHeight() * L) );
-    auto beta = 90 - beta1 - beta2;
+    auto tibiaAngle = 90 - beta1 - beta2;   // Beta
 
-    auto gamma = 90 - std::acos( (legLength*legLength - tibia->getHeight()*tibia->getHeight() - femur->getHeight()*femur->getHeight())
+    // Gamma
+    auto coxaAngle = 90 - std::acos( (legLength*legLength - tibia->getHeight()*tibia->getHeight() - femur->getHeight()*femur->getHeight())
                                 / (-2 * femur->getHeight() * tibia->getHeight() ) );
 
-    auto alpha = std::atan2( (oldPos(2) - joints[0]->getPos()(2)) , (oldPos(0) - joints[0]->getPos()(0)) );
+    // Alpha
+    auto femurAngle = std::atan2( (newPos(2) - joints[0]->getPos()(2)) , (newPos(0) - joints[0]->getPos()(0)) );
 
-    auto angle = Angles(alpha, beta, gamma);
+    auto angle = Angles(femurAngle, tibiaAngle, coxaAngle);
     return angle;
 
 }

@@ -73,11 +73,10 @@ void Hexapod::adjustPositions(){
 
 
     // Make the legs point, relaxed position
-    //    float angle = 45.0f;
-    //    joints[0]->rotate( GMlib::Angle(-angle), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
-    //    joints[6]->rotate( GMlib::Angle(angle), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
-    //    joints[9]->rotate( GMlib::Angle(angle), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
-    //    joints[15]->rotate( GMlib::Angle(-angle), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
+        legs[0]->getJoints()[0].get()->rotate( GMlib::Angle(-45), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
+        legs[2]->getJoints()[0].get()->rotate( GMlib::Angle(45), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
+        legs[3]->getJoints()[0].get()->rotate( GMlib::Angle(45), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
+        legs[5]->getJoints()[0].get()->rotate( GMlib::Angle(-45), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
 
 
 }
@@ -118,13 +117,6 @@ void Hexapod::forward(double dt){
 void Hexapod::localSimulate(double dt){
 
 
-
-//    while( leg != 18) {
-//        forward(dt);
-//        leg += 3;
-//    }
-
-////    if(leg == 18) leg = 0;
 }
 
 
