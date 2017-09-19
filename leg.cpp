@@ -142,8 +142,10 @@ Angles Leg::inverseKinematics(GMlib::Point<float, 3> oldPos, GMlib::Point<float,
     auto tibiaAngle = 90 - beta1 - beta2;   // Beta
 
     // Gamma
-    auto coxaAngle = 90 - std::acos( (legLength*legLength - tibia->getHeight()*tibia->getHeight() - femur->getHeight()*femur->getHeight())
-                                / (-2 * femur->getHeight() * tibia->getHeight() ) );
+    auto tibiaHeight = tibia->getHeight();
+    auto femurHeight = femur->getHeight();
+
+    auto coxaAngle = 90 - std::acos(  (legLength*legLength -  tibiaHeight * tibiaHeight - femurHeight* femurHeight)/(-2 * tibiaHeight*femurHeight) );
 
     // Alpha
     auto femurAngle = std::atan2( (newPos(2) - joints[0]->getPos()(2)) , (newPos(0) - joints[0]->getPos()(0)) );

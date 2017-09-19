@@ -92,11 +92,6 @@ void Hexapod::link(){
 
 void Hexapod::forward(double dt){
 
-
-
-
-
-    // Ghada's code
 //    while(std::abs(joints[leg]->getSide()* body->getSide()) > std::cos(45) ){
 
 //        if(leg <= 6) joints[leg]->rotate(GMlib::Angle(dt), GMlib::Vector<float,3>(-1.0f, 0.0f, 0.0f));
@@ -112,11 +107,18 @@ void Hexapod::forward(double dt){
 //    joints[0]->rotate( GMlib::Angle(-45), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
 //    joints[9]->rotate( GMlib::Angle(45), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
 
+    auto oldPos =  legs[1]->getJoints()[2]->getGlobalPos();
+
+    legs[1]->getJoints()[1]->rotateGlobal(GMlib::Angle(30),GMlib::Vector<float,3>(0.0, 0.0f, 1.0f));
+
+    auto newPos =  legs[1]->getJoints()[2]->getGlobalPos();
+
+    auto angles = legs[1]->inverseKinematics(oldPos,newPos);
 }
 
 void Hexapod::localSimulate(double dt){
 
-
+    forward(dt);
 }
 
 
