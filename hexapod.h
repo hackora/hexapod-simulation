@@ -19,6 +19,8 @@ public:
     void replot(int m1=20, int m2=20, int d1=1, int d2=1);
     void toggleDefaultVisualizer();
     void insert(const std::shared_ptr<GMlib::Scene>&scene);
+    std::shared_ptr<GMlib::PCylinder<float>> getBody(){return body;}
+    std::vector<std::shared_ptr<Leg>> getLegs(){return legs;}
     void forward(double dt);
 
     Angles inverseKinematics(GMlib::Point<float,3> oldPos, GMlib::Point<float,3> newPos);
@@ -36,8 +38,6 @@ private:
 
     void adjustPositions();
     void link();
-
-    int leg = 0;
 };
 
 

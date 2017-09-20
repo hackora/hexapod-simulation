@@ -27,7 +27,7 @@ class Leg: public  GMlib::SceneObject {
         void toggleDefaultVisualizer();
         void insert(const std::shared_ptr<GMlib::Scene>&scene);
 
-        Angles inverseKinematics(GMlib::Point<float,3> oldPos, GMlib::Point<float,3> newPos);
+        Angles inverseKinematics(GMlib::Point<float,3> targetPosition);
 
         std::vector<std::shared_ptr<GMlib::PSphere<float>>> getJoints();
         std::shared_ptr<GMlib::PCylinder<float>> getCoxa();

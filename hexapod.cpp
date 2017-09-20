@@ -3,6 +3,7 @@
 Hexapod::Hexapod(GMlib::Point<float, 3> pos){
 
     makeBody(pos);
+    body->setVisible(false);
     makeLegs(pos);
 }
 
@@ -107,13 +108,24 @@ void Hexapod::forward(double dt){
 //    joints[0]->rotate( GMlib::Angle(-45), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
 //    joints[9]->rotate( GMlib::Angle(45), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
 
-    auto oldPos =  legs[1]->getJoints()[2]->getGlobalPos();
+    auto oldPos =  legs[1]->getTibia()->getPos();
+    auto endpoint = GMlib::Point<float,3>(oldPos(0),oldPos(1),oldPos(2) + 0.5); //half the tibia height
+    auto gEndpoint = legs[1]->getTibia()->getMatrixGlobal() * endpoint;
 
-    legs[1]->getJoints()[1]->rotateGlobal(GMlib::Angle(30),GMlib::Vector<float,3>(0.0, 0.0f, 1.0f));
+    auto targetPos =  GMlib::Point<float,3>(endpoint(0),dt,endpoint(2));
 
-    auto newPos =  legs[1]->getJoints()[2]->getGlobalPos();
+    auto angles = legs[1]->inverseKinematics(targetPos);
 
-    auto angles = legs[1]->inverseKinematics(oldPos,newPos);
+    legs[1]->getJoints()[0]->rotate(angles.alpha,GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f));
+    legs[1]->getJoints()[1]->rotate(angles.beta,GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f));
+    legs[1]->getJoints()[2]->rotate(angles.gamma,GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f));
+
+     auto test1 =  legs[1]->getTibia()->getMatrixGlobal() * legs[1]->getTibia()->getPos();
+
+//      legs[3]->getJoints()[0]->rotateGlabal(angles.alpha,GMlib::Vector<float,3>(0.0, 0.0f, 1.0f));
+//      legs[3]->getJoints()[1]->rotateGlobal(angles.beta,GMlib::Vector<float,3>(0.0, 1.0f, 0.0f));
+//      legs[3]->getJoints()[2]->rotateGlobal(angles.gamma,GMlib::Vector<float,3>(0.0, 1.0f, 0.0f));
+
 }
 
 void Hexapod::localSimulate(double dt){

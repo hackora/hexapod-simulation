@@ -71,18 +71,50 @@ void Scenario::initializeScenario() {
   hexapod->setMaterial(GMlib::GMmaterial::blackPlastic(),GMlib::GMmaterial::sapphire(),
                                    GMlib::GMmaterial::ruby(),GMlib::GMmaterial::blackRubber(),GMlib::GMmaterial::snow());
   hexapod->insert(scene());
+  hexapod->getBody()->translate(GMlib::Vector<float,3>(5.0f,0.0f,0.0f));
 
-//  // Surface visualizers
-//  auto surface_visualizer = new GMlib::PSurfNormalsVisualizer<float,3>;
 
-//  // Surface
-//  auto surface = new TestTorus;
-//  surface->toggleDefaultVisualizer();
-//  surface->insertVisualizer(surface_visualizer);
-//  surface->replot(200,200,1,1);
-//  scene()->insert(surface);
 
-//  surface->test01();
+//  auto joint0= new  GMlib::PSphere<float>();
+//  joint0->toggleDefaultVisualizer();
+//  joint0->replot(100  ,100,1,1);
+//  scene()->insert(joint0);
+
+
+//  auto shape1= new   GMlib::PCylinder<float>(1  ,1,6);
+//  shape1->translate(GMlib::Vector<float,3>(0,0,3.3));
+//  shape1->toggleDefaultVisualizer();
+//  shape1->replot(100,100,   1,1);
+//  joint0->insert(shape1);
+
+
+//  auto joint1= new  GMlib::PSphere<float>();
+//  joint1->translate(GMlib::Vector<float,3>(0,0,3.3));
+//  joint1->toggleDefaultVisualizer();
+//  joint1->replot(100  ,100,1,1);
+//  shape1->insert(joint1);
+
+//  auto shape2= new   GMlib::PCylinder<float>(1  ,1,6);
+//  shape2->translate(GMlib::Vector<float,3>(0,0,3.3));
+//  shape2->toggleDefaultVisualizer();
+//  shape2->replot(100,100,   1,1);
+//  joint1->insert(shape2);
+
+//  auto joint2= new  GMlib::PSphere<float>();
+//  joint2->translate(GMlib::Vector<float,3>(0,0,3.3));
+//  joint2->toggleDefaultVisualizer();
+//  joint2->replot(100  ,100,1,1);
+//  shape2->insert(joint2);
+
+//  joint1->rotate(GMlib::Angle(90),GMlib::Vector<float,3>(0,1,0));
+
+// auto  gshape1Pos = shape1->getMatrixGlobal() * shape1->getPos();
+// auto  gjoint2Pos = joint2->getMatrixGlobal() *  joint2->getPos();
+// auto  gshape2Pos = shape2->getMatrixGlobal() * shape2->getPos();
+
+// auto  nshape1Pos = shape1->getPos();
+// auto  njoint2Pos =   joint2->getPos();
+// auto  nshape2Pos = shape2->getPos();
 
 }
 

@@ -132,27 +132,27 @@ void Leg::link()
 // Add newDirection vector, as the direction of the leg needs to be valid
 // Børre suggest generalizing the names of alpha, beta, gamma
 
-Angles Leg::inverseKinematics(GMlib::Point<float, 3> oldPos, GMlib::Point<float, 3> newPos)
+Angles Leg::inverseKinematics(GMlib::Point<float, 3> targetPosition)
 {
-    auto legLength = std::sqrt( std::pow( (newPos(0) - joints[0]->getPos()(0)), 2) + std::pow( (newPos(2) - joints[0]->getPos()(2)), 2) );
-    auto L = std::sqrt( std::pow( legLength - coxa->getHeight(),2 ) + std::pow( (newPos(1) - joints[0]->getPos()(1)), 2)  );
+     auto gJointPos = joints[0]->getPos();
+    auto legLength = std::sqrt( std::pow( (targetPosition(0) -  gJointPos(0)), 2) + std::pow( (targetPosition(2) - gJointPos(1)), 2) );
+    auto L = std::sqrt( std::pow( legLength - coxa->getHeight(),2 ) + std::pow( (targetPosition(2) - gJointPos(2)), 2)  );
 
-    auto beta1 = std::atan2( (legLength - coxa->getHeight()),(newPos(1) - joints[0]->getPos()(1)) );
+    auto beta1 = std::atan2( (legLength - coxa->getHeight()),(targetPosition(2) -gJointPos(2)) );
     auto beta2 = std::acos( (legLength*legLength - femur->getHeight()*femur->getHeight() - L*L) / (-2 * femur->getHeight() * L) );
-    auto tibiaAngle = 90 - beta1 - beta2;   // Beta
+    auto tibiaAngle = M_PI*0.5  - beta1 - beta2;   // Beta
 
     // Gamma
     auto tibiaHeight = tibia->getHeight();
     auto femurHeight = femur->getHeight();
 
-    auto coxaAngle = 90 - std::acos(  (legLength*legLength -  tibiaHeight * tibiaHeight - femurHeight* femurHeight)/(-2 * tibiaHeight*femurHeight) );
+    auto coxaAngle = M_PI*0.5 - std::acos(  (legLength*legLength -  tibiaHeight * tibiaHeight - femurHeight* femurHeight)/(-2 * tibiaHeight*femurHeight) );
 
     // Alpha
-    auto femurAngle = std::atan2( (newPos(2) - joints[0]->getPos()(2)) , (newPos(0) - joints[0]->getPos()(0)) );
+    auto femurAngle = std::atan2( (targetPosition(1) -gJointPos(1)) , (targetPosition(0) -gJointPos(0)) );
 
-    auto angle = Angles(femurAngle, tibiaAngle, coxaAngle);
+    auto angle = Angles(femurAngle*180/M_PI, tibiaAngle*180/M_PI, coxaAngle*180/M_PI);
     return angle;
-
 }
 
 std::vector<std::shared_ptr<GMlib::PSphere<float> > > Leg::getJoints()
