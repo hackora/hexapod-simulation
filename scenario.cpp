@@ -64,25 +64,13 @@ void Scenario::initializeScenario() {
   scene()->insertCamera( top_rcpair.camera.get() );
   top_rcpair.renderer->reshape( GMlib::Vector<int,2>(init_viewport_size, init_viewport_size) );
 
-  auto hexapod = new Hexapod();
 
+  auto hexapod = new Hexapod();
   hexapod->toggleDefaultVisualizer();
   hexapod->replot();
   hexapod->setMaterial(GMlib::GMmaterial::blackPlastic(),GMlib::GMmaterial::sapphire(),
                                    GMlib::GMmaterial::ruby(),GMlib::GMmaterial::blackRubber(),GMlib::GMmaterial::snow());
   hexapod->insert(scene());
-
-//  // Surface visualizers
-//  auto surface_visualizer = new GMlib::PSurfNormalsVisualizer<float,3>;
-
-//  // Surface
-//  auto surface = new TestTorus;
-//  surface->toggleDefaultVisualizer();
-//  surface->insertVisualizer(surface_visualizer);
-//  surface->replot(200,200,1,1);
-//  scene()->insert(surface);
-
-//  surface->test01();
 
 }
 

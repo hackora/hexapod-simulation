@@ -5,12 +5,12 @@
 #include<memory>
 #include "tibia.h"
 
-struct Angles {
+struct IKAngles {
 
-    GMlib::Angle alpha;
-    GMlib::Angle beta;
-    GMlib::Angle gamma;
-    Angles(GMlib::Angle a, GMlib::Angle b, GMlib::Angle g) {alpha = a; beta = b; gamma = g; }
+    GMlib::Angle coxaAngle;
+    GMlib::Angle femurAngle;
+    GMlib::Angle tibiaAngle;
+    IKAngles(GMlib::Angle coxa, GMlib::Angle femur, GMlib::Angle tibia) {coxaAngle = coxa; femurAngle = femur; tibiaAngle = tibia; }
 };
 
 
@@ -27,7 +27,7 @@ class Leg: public  GMlib::SceneObject {
         void toggleDefaultVisualizer();
         void insert(const std::shared_ptr<GMlib::Scene>&scene);
 
-        Angles inverseKinematics(GMlib::Point<float,3> oldPos, GMlib::Point<float,3> newPos);
+        IKAngles inverseKinematics(GMlib::Point<float,3> targetPosition);
 
         std::vector<std::shared_ptr<GMlib::PSphere<float>>> getJoints();
         std::shared_ptr<GMlib::PCylinder<float>> getCoxa();
