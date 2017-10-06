@@ -72,12 +72,12 @@ void Hexapod::toggleDefaultVisualizer(){
     }
 }
 
-void Hexapod::insert(const std::shared_ptr<GMlib::Scene>&scene){
+void Hexapod::insert(GMlib::Scene &scene){
 
     adjustPositions();
     link();
-    scene->insert(body.get());
-    scene->insert(this);
+    scene.insert(body.get());
+    scene.insert(this);
 
     //base frame  needed in the leg instead later
 
@@ -108,7 +108,7 @@ void Hexapod::insert(const std::shared_ptr<GMlib::Scene>&scene){
      z->setColor(GMlib::GMcolor::blue());
      base->insert(z);
 
-     scene->insert(base);
+     scene.insert(base);
 }
 
 void Hexapod::adjustPositions(){
@@ -146,11 +146,11 @@ void Hexapod::link(){
 
 void Hexapod::moveForward(double dt){
 
-//    auto tibia_pos = legs[1]->getTibia()->getPos();
-//    auto endEffector_pos = GMlib::Point<float,3>(tibia_pos(0)+1,tibia_pos(1),tibia_pos(2));
-//    auto endEffector_basePos =  legs[1]->getCoxa()->getMatrix()*
-//            legs[1]->getJoints()[1]->getMatrix()*  legs[1]->getFemur()->getMatrix() *
-//            legs[1]->getJoints()[2]->getMatrix()* endEffector_pos;
+    auto tibia_pos = legs[1]->getTibia()->getPos();
+    auto endEffector_pos = GMlib::Point<float,3>(tibia_pos(0)+1,tibia_pos(1),tibia_pos(2));
+    auto endEffector_basePos =  legs[1]->getCoxa()->getMatrix()*
+            legs[1]->getJoints()[1]->getMatrix()*  legs[1]->getFemur()->getMatrix() *
+            legs[1]->getJoints()[2]->getMatrix()* endEffector_pos;
 
     auto targetPos =   GMlib::Point<float,3>(3.6,0.0,0.0);  //choose a target position for the endEffector of leg1 to reach
 
@@ -165,24 +165,114 @@ void Hexapod::moveForward(double dt){
     GMlib::Angle angle2=  (legs[1]->getJoints()[2]->getGlobalDir())
             .getAngle(legs[1]->getJoints()[1]->getGlobalDir());
 
-    if(time==0){
 
-        auto goalMark = new GMlib::PSphere<float>(0.1);
-        goalMark->toggleDefaultVisualizer();
-        goalMark->replot(10,10,1,1);
-        goalMark->setMaterial(GMlib::GMmaterial::emerald());
-        base->insert(goalMark);
-        goalMark->translate(targetPos);
+    //        auto goalMark = new GMlib::PSphere<float>(0.1);
+    //        goalMark->toggleDefaultVisualizer();
+    //        goalMark->replot(10,10,1,1);
+    //        goalMark->setMaterial(GMlib::GMmaterial::emerald());
+    //        base->insert(goalMark);
+    //        goalMark->translate(targetPos);
 
-        legs[1]->getJoints()[0]->rotate(coxaAngle,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+    //        legs[1]->getJoints()[0]->rotate(coxaAngle,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
 
-        legs[1]->getJoints()[1]->rotate(-femurAngle+angle1 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+    //        legs[1]->getJoints()[1]->rotate(-femurAngle+angle1 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
 
-        legs[1]->getJoints()[2]->rotate(tibiaAngle+angle2,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+    //        legs[1]->getJoints()[2]->rotate(tibiaAngle+angle2,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
 
-        time++;
+    if(!cycle){
+        if(time==0 ){
+
+            //Lift leg
+            legs[1]->getJoints()[1]->rotate(30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[3]->getJoints()[1]->rotate(30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[5]->getJoints()[1]->rotate(30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+
+            time++;
+
+        }
+
+        else if(time==1){
+
+            //Move leg forward
+            legs[1]->getJoints()[0]->rotate(10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[3]->getJoints()[0]->rotate(-10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[5]->getJoints()[0]->rotate(-10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            time = 0;
+            cycle =true;
+        }
     }
 
+    if(cycle ){
+
+        if(time==0){
+
+            //Drop leg
+            legs[1]->getJoints()[1]->rotate(-30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[3]->getJoints()[1]->rotate(-30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[5]->getJoints()[1]->rotate(-30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+
+            //Lift leg
+            legs[4]->getJoints()[1]->rotate(30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[0]->getJoints()[1]->rotate(30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[2]->getJoints()[1]->rotate(30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+
+            time ++;
+        }
+
+        else if(time==1){
+
+            //Move leg backward
+            legs[1]->getJoints()[0]->rotate(-10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[3]->getJoints()[0]->rotate(10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[5]->getJoints()[0]->rotate(10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+
+            //Move leg forward
+            legs[4]->getJoints()[0]->rotate(-10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[0]->getJoints()[0]->rotate(10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[2]->getJoints()[0]->rotate(10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+
+            //move body forward
+            body->translateGlobal( GMlib::Vector<float,3>(0.0f, dt, 0.0f));
+
+            time ++;
+        }
+
+
+
+        else if(time==2){
+
+            //Drop leg
+            legs[4]->getJoints()[1]->rotate(-30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[0]->getJoints()[1]->rotate(-30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[2]->getJoints()[1]->rotate(-30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+
+            //Lift leg
+            legs[1]->getJoints()[1]->rotate(30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[3]->getJoints()[1]->rotate(30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[5]->getJoints()[1]->rotate(30 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+
+            time ++;
+        }
+
+        else if(time==3){
+
+            //Move leg backward
+            legs[4]->getJoints()[0]->rotate(10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[0]->getJoints()[0]->rotate(-10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[2]->getJoints()[0]->rotate(-10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+
+            //Move leg forward
+            legs[1]->getJoints()[0]->rotate(10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[3]->getJoints()[0]->rotate(-10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            legs[5]->getJoints()[0]->rotate(-10 , GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+
+            //move body forward
+            body->translateGlobal( GMlib::Vector<float,3>(0.0f, dt, 0.0f));
+
+            time  =0;
+
+        }
+    }
 }
 void Hexapod::localSimulate(double dt){
 

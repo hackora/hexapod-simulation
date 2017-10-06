@@ -131,6 +131,7 @@ set( HDRS
   tibia.h
   hexapod.h
   leg.h
+  simulator.h
   )
 
 set( SRCS
@@ -156,6 +157,7 @@ set( SRCS
   tibia.cpp
   hexapod.cpp
   leg.cpp
+  simulator.cpp
   )
 
 #########

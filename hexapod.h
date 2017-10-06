@@ -17,7 +17,7 @@ public:
     void setMaterial(const GMlib::Material &bm, const GMlib::Material &cm, const GMlib::Material &fm, const GMlib::Material &tm, const GMlib::Material &jm);
     void replot(int m1=20, int m2=20, int d1=1, int d2=1);
     void toggleDefaultVisualizer();
-    void insert(const std::shared_ptr<GMlib::Scene>&scene);
+    void insert(GMlib::Scene &scene);
     std::shared_ptr<GMlib::PCylinder<float>> getBody(){return body;}
     std::vector<std::shared_ptr<Leg>> getLegs(){return legs;}
     void moveForward(double dt);
@@ -27,6 +27,8 @@ public:
 
     //For debugging
     int time =0;
+    double t=0;
+    bool cycle=false;
 
 
 protected:

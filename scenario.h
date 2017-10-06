@@ -1,6 +1,7 @@
 #ifndef SCENARIO_H
 #define SCENARIO_H
 
+class Simulator;
 
 #include "application/gmlibwrapper.h"
 
@@ -15,6 +16,9 @@ public:
 
   void    initializeScenario() override;
   void    cleanupScenario() override;
+
+private:
+  std::shared_ptr<Simulator> _simulator;
 
 };
 

@@ -1,7 +1,6 @@
 #include "scenario.h"
+#include "simulator.h"
 #include "hexapod.h"
-
-#include "testtorus.h"
 
 //// hidmanager
 //#include "hidmanager/defaulthidmanager.h"
@@ -65,14 +64,11 @@ void Scenario::initializeScenario() {
   top_rcpair.renderer->reshape( GMlib::Vector<int,2>(init_viewport_size, init_viewport_size) );
 
 
-  auto hexapod = new Hexapod();
-  hexapod->toggleDefaultVisualizer();
-  hexapod->replot();
-  hexapod->setMaterial(GMlib::GMmaterial::blackPlastic(),GMlib::GMmaterial::sapphire(),
-                                   GMlib::GMmaterial::ruby(),GMlib::GMmaterial::blackRubber(),GMlib::GMmaterial::snow());
-  hexapod->insert(scene());
+  _simulator = std::make_shared<Simulator>(*scene());
+  _simulator->setupSimulator();
 
 }
 
 void Scenario::cleanupScenario() {
+    _simulator.reset();
 }
