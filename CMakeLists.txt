@@ -133,6 +133,7 @@ set( HDRS
   leg.h
   simulator.h
   hexapod_controller.h
+  gait.h
   )
 
 set( SRCS
@@ -160,6 +161,7 @@ set( SRCS
   leg.cpp
   simulator.cpp
   hexapod_controller.cpp
+  gait.cpp
   )
 
 #########
