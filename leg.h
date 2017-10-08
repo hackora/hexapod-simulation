@@ -26,9 +26,12 @@ class Leg: public  GMlib::SceneObject {
         void setMaterial(const GMlib::Material &cm, const GMlib::Material &fm, const GMlib::Material &tm, const GMlib::Material &jm);
         void replot(int m1=20, int m2=20, int d1=1, int d2=1);
         void toggleDefaultVisualizer();
-        void insert(const std::shared_ptr<GMlib::Scene>&scene);
+        void insert(GMlib::Scene& scene){ scene.insert(this);}
 
         IKAngles inverseKinematics(GMlib::Point<float,3> targetPosition);
+        void update_tip_position();
+        GMlib::APoint<float,4> get_tip_pos(){update_tip_position();return tip_pos;}
+
 
         std::vector<std::shared_ptr<GMlib::PSphere<float>>> getJoints();
         std::shared_ptr<GMlib::PCylinder<float>> getCoxa();
@@ -41,6 +44,7 @@ class Leg: public  GMlib::SceneObject {
         std::shared_ptr<GMlib::PCylinder<float>> femur;
         std::shared_ptr<Tibia> tibia;
         std::vector<std::shared_ptr< GMlib::PSphere<float>>> joints;    // 3
+        void localSimulate(double dt)override;
 
 
     private:
@@ -52,6 +56,7 @@ class Leg: public  GMlib::SceneObject {
         void link();
 
         bool right;
+        GMlib::APoint<float,4> tip_pos;
 
 };
 

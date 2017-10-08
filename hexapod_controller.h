@@ -42,6 +42,7 @@ private:
     void update_angles();
     unsigned int time=0;
     int tripod_steps[6] = {1,2,1,2,1,2};
+    int t=0;
 
 
 };

@@ -4,31 +4,31 @@
 Hexapod::Hexapod(GMlib::Point<float, 3> pos){
 
     makeBody(pos);
-//    body->setVisible(false);
+    body->setVisible(false);
     makeLegs(pos);
 
 
-//    //body frame
-//    auto x = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.8,0.0,0.0));
-//    x->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-//    x->toggleDefaultVisualizer();
-//    x->replot(10,1);
-//    x->setColor(GMlib::GMcolor::red());
-//    body->insert(x);
+    //body frame
+    auto x = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.8,0.0,0.0));
+    x->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+    x->toggleDefaultVisualizer();
+    x->replot(10,1);
+    x->setColor(GMlib::GMcolor::red());
+    body->insert(x);
 
-//    auto y = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.8,0.0));
-//    y->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-//    y->toggleDefaultVisualizer();
-//    y->replot(10,1);
-//    y->setColor(GMlib::GMcolor::green());
-//    body->insert(y);
+    auto y = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.8,0.0));
+    y->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+    y->toggleDefaultVisualizer();
+    y->replot(10,1);
+    y->setColor(GMlib::GMcolor::green());
+    body->insert(y);
 
-//    auto z = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.0,0.8));
-//    z->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-//    z->toggleDefaultVisualizer();
-//    z->replot(10,1);
-//    z->setColor(GMlib::GMcolor::blue());
-//    body->insert(z);
+    auto z = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.0,0.8));
+    z->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+    z->toggleDefaultVisualizer();
+    z->replot(10,1);
+    z->setColor(GMlib::GMcolor::blue());
+    body->insert(z);
 
 }
 
@@ -77,6 +77,9 @@ void Hexapod::insert(GMlib::Scene &scene){
     adjustPositions();
     link();
     scene.insert(body.get());
+    for(unsigned int i=0;i<legs.size();i++){
+        legs[i]->insert(scene);
+    }
     scene.insert(this);
 
     //base frame  needed in the leg instead later
@@ -277,4 +280,5 @@ void Hexapod::moveForward(double dt){
 void Hexapod::localSimulate(double dt){
 
 //    moveForward(dt);
+
 }

@@ -2,7 +2,7 @@
 
 
 Gait::Gait(gait_type type) {
-    lift_height = 1.0f;
+    lift_height = 1.5f;
     id = type;
     step_size = 0.5f;
 

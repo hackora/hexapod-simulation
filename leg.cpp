@@ -4,6 +4,8 @@
 
 Leg::Leg(GMlib::Point<float, 3> pos, bool orientation)
 {
+
+
     makeJoints();
     makeCoxa();
     makeFemur();
@@ -12,6 +14,10 @@ Leg::Leg(GMlib::Point<float, 3> pos, bool orientation)
     right = orientation;
     adjustPositions();
     link();
+    auto joint0= joints[0]->getPos();
+    this->translate(GMlib::Vector<float,3>(joint0(0),joint0(1),joint0(2)));
+
+    update_tip_position();
 
     for(unsigned int i = 0; i<3;i++){
 
@@ -218,7 +224,9 @@ IKAngles Leg::inverseKinematics(GMlib::Point<float, 3> targetPosition){
     auto l = z0 *z0  +  r*r;
 
     auto coxaAngle = std::atan2(targetPosition(1),targetPosition(0));
-    auto tibiaAngle = std::acos((l-femurHeight*femurHeight-tibiaHeight*tibiaHeight)/(2*femurHeight*tibiaHeight));
+    auto tibiaAngle =  1.5708- std::acos((l-femurHeight*femurHeight-tibiaHeight*tibiaHeight)/(2*femurHeight*tibiaHeight));
+//    if(tibiaAngle <=-2 || tibiaAngle>=2)
+//        tibiaAngle = 1.5708- tibiaAngle;
     auto femurAngle = std::atan2(r,z0)-std::atan2(femurHeight+tibiaHeight*std::cos(tibiaAngle), tibiaHeight* std::sin(tibiaAngle) );
 
     auto angles = IKAngles(coxaAngle, femurAngle, tibiaAngle);
@@ -246,4 +254,20 @@ std::shared_ptr<GMlib::PCylinder<float> > Leg::getFemur()
 std::shared_ptr<Tibia >  Leg::getTibia()
 {
     return tibia;
+}
+
+void Leg::update_tip_position(){
+    auto tibia_pos = this->getTibia()->getPos();
+    auto femur_matrix = this->getFemur()->getMatrix() ;
+    auto femur_global = this->getFemur()->getGlobalPos();
+    auto joint1_global = this->getJoints()[1]->getGlobalPos();
+    auto endEffector_pos = GMlib::Point<float,3>(tibia_pos(0)+1,tibia_pos(1),tibia_pos(2));
+    GMlib::APoint<float,4> endEffector_basePos =  this->getCoxa()->getMatrix()*
+            (this->getJoints()[1]->getMatrix()*  ( this->getFemur()->getMatrix() *
+            (this->getJoints()[2]->getMatrix()* (endEffector_pos))));
+    tip_pos = endEffector_basePos;
+}
+
+void Leg::localSimulate(double dt){
+
 }
