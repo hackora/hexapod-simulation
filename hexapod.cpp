@@ -276,5 +276,5 @@ void Hexapod::moveForward(double dt){
 }
 void Hexapod::localSimulate(double dt){
 
-    moveForward(dt);
+//    moveForward(dt);
 }

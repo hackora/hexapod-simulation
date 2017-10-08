@@ -11,6 +11,7 @@ struct IKAngles {
     GMlib::Angle femurAngle;
     GMlib::Angle tibiaAngle;
     IKAngles(GMlib::Angle coxa, GMlib::Angle femur, GMlib::Angle tibia) {coxaAngle = coxa; femurAngle = femur; tibiaAngle = tibia; }
+    void operator=(IKAngles angles){coxaAngle = angles.coxaAngle; femurAngle = angles.femurAngle; tibiaAngle = angles.tibiaAngle;}
 };
 
 
