@@ -136,6 +136,12 @@ void Hexapod::adjustPositions(){
     legs[2]->getJoints()[0].get()->rotate( GMlib::Angle(-45), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
     legs[3]->getJoints()[0].get()->rotate( GMlib::Angle(-45), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
     legs[5]->getJoints()[0].get()->rotate( GMlib::Angle(45), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+
+    //adjust leg_bases
+    legs[0]->leg_base->translate(GMlib::Vector<float,3>(0.0f,1.5f,0.0f));
+    legs[2]->leg_base->translate( GMlib::Vector<float,3>(0.0f, -1.5f, 0.0f));
+    legs[3]->leg_base->translate( GMlib::Vector<float,3>(0.0f, -1.5, 0.0f));
+    legs[5]->leg_base->translate( GMlib::Vector<float,3>(0.0f, 1.5f, 0.0f));
 }
 
 void Hexapod::link(){
@@ -143,6 +149,7 @@ void Hexapod::link(){
     for(unsigned int i = 0; i <legs.size(); i++) {
 
         body->insert(legs[i]->getJoints()[0].get());
+        body->insert((legs[i]->leg_base).get());
     }
 
 }

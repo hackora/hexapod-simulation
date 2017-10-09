@@ -11,13 +11,49 @@ Leg::Leg(GMlib::Point<float, 3> pos, bool orientation)
     makeFemur();
     makeTibia();
 
+    //tip
+
+    tip= std::make_shared< GMlib::PSphere<float>>(0.1);
+    tip->toggleDefaultVisualizer();
+    tip->setMaterial(GMlib::GMmaterial::polishedGreen());
+    tip->replot(10  ,10,1,1);
+
+    //base frame
+
+     leg_base= std::make_shared< GMlib::PSphere<float>>(0.2);
+     leg_base->toggleDefaultVisualizer();
+     leg_base->setMaterial(GMlib::GMmaterial::blackRubber());
+     leg_base->replot(10  ,10,1,1);
+
+     auto x = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.8,0.0,0.0));
+     x->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+     x->toggleDefaultVisualizer();
+     x->replot(10,1);
+     x->setColor(GMlib::GMcolor::red());
+     leg_base->insert(x);
+
+     auto y = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.8,0.0));
+     y->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+     y->toggleDefaultVisualizer();
+     y->replot(10,1);
+     y->setColor(GMlib::GMcolor::green());
+     leg_base->insert(y);
+
+     auto z = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.0,0.8));
+     z->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+     z->toggleDefaultVisualizer();
+     z->replot(10,1);
+     z->setColor(GMlib::GMcolor::blue());
+     leg_base->insert(z);
+
+
     right = orientation;
     adjustPositions();
     link();
     auto joint0= joints[0]->getPos();
     this->translate(GMlib::Vector<float,3>(joint0(0),joint0(1),joint0(2)));
 
-    update_tip_position();
+//    update_tip_position();
 
     for(unsigned int i = 0; i<3;i++){
 
@@ -115,10 +151,14 @@ void Leg::adjustPositions()
 
         // Joint between Body and Coxas
         joints[0]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 1.0f ) );
+        tip->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 1.0f ) );
 
         if(right){
+            leg_base->translate(GMlib::Vector<float,3>(0.0f,0.0f,1.0f));
             joints[0]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ) );
-            joints[0]->rotate( GMlib::Angle(180), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f ) );
+            joints[0]->rotate( GMlib::Angle(180), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f ) );         
+            leg_base->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ) );
+            leg_base->rotate( GMlib::Angle(180), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f ) );
             coxa->rotate(GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ));
             joints[1]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>( 1.0f, 0.0f,0.0f ) );
             joints[1]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>( 0.0f, 0.0f,1.0f ) );
@@ -141,8 +181,10 @@ void Leg::adjustPositions()
         }
 
             if(!right) {
+                leg_base->translate(GMlib::Vector<float,3>(0.0f,0.0f,-1.0f));
 
                 joints[0]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ) );
+                leg_base->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ) );
                 joints[0]->translate( GMlib::Vector<float,3>( 2.0f, 0.0f, 0.0f ) );
                 coxa->rotate(GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ));
                 joints[1]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>( 1.0f, 0.0f,0.0f ) );
@@ -205,6 +247,7 @@ void Leg::link()
         }
         else joints[j]->insert( coxa.get() );
     }
+    tibia->insert(tip.get());
 }
 
 // Don't need old position, but can be useful to keep for checking distance, too big distance is bad.
@@ -224,9 +267,7 @@ IKAngles Leg::inverseKinematics(GMlib::Point<float, 3> targetPosition){
     auto l = z0 *z0  +  r*r;
 
     auto coxaAngle = std::atan2(targetPosition(1),targetPosition(0));
-    auto tibiaAngle =  1.5708- std::acos((l-femurHeight*femurHeight-tibiaHeight*tibiaHeight)/(2*femurHeight*tibiaHeight));
-//    if(tibiaAngle <=-2 || tibiaAngle>=2)
-//        tibiaAngle = 1.5708- tibiaAngle;
+    auto tibiaAngle =  6.28319 - std::acos((l-femurHeight*femurHeight-tibiaHeight*tibiaHeight)/(2*femurHeight*tibiaHeight));
     auto femurAngle = std::atan2(r,z0)-std::atan2(femurHeight+tibiaHeight*std::cos(tibiaAngle), tibiaHeight* std::sin(tibiaAngle) );
 
     auto angles = IKAngles(coxaAngle, femurAngle, tibiaAngle);
@@ -257,15 +298,14 @@ std::shared_ptr<Tibia >  Leg::getTibia()
 }
 
 void Leg::update_tip_position(){
-    auto tibia_pos = this->getTibia()->getPos();
-    auto femur_matrix = this->getFemur()->getMatrix() ;
-    auto femur_global = this->getFemur()->getGlobalPos();
-    auto joint1_global = this->getJoints()[1]->getGlobalPos();
-    auto endEffector_pos = GMlib::Point<float,3>(tibia_pos(0)+1,tibia_pos(1),tibia_pos(2));
-    GMlib::APoint<float,4> endEffector_basePos =  this->getCoxa()->getMatrix()*
-            (this->getJoints()[1]->getMatrix()*  ( this->getFemur()->getMatrix() *
-            (this->getJoints()[2]->getMatrix()* (endEffector_pos))));
-    tip_pos = endEffector_basePos;
+
+    auto present = leg_base->getMatrixGlobal();
+    auto tip_global_pos = tip->getGlobalPos();
+
+    auto present_inverted = present;
+    present_inverted.invertOrthoNormal(); //scene to base
+
+    tip_base_pos = present_inverted * (tip_global_pos);
 }
 
 void Leg::localSimulate(double dt){
