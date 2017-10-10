@@ -77,10 +77,15 @@ void Hexapod_controller::walk_forward(Gait gait, double dt){
 
     auto var = tick/(float)timespan;
 
+    if(active_leg == 4)
+        bool test = true;
+
+    if(t == 10 || t == 20 || t == 30 || t == 40 || t == 50 || t == 60 ) {
+
    for(unsigned int i =0;i<6;i++){
-       auto coxaAngle =  angles[i][tripod_steps[i]-1].coxaAngle;
-       auto femurAngle = angles[i][tripod_steps[i]-1].femurAngle;
-       auto tibiaAngle = angles[i][tripod_steps[i]-1].tibiaAngle;
+       auto coxaAngle =  angles[i][wave_steps[i]-1].coxaAngle;
+       auto femurAngle = angles[i][wave_steps[i]-1].femurAngle;
+       auto tibiaAngle = angles[i][wave_steps[i]-1].tibiaAngle;
 
        GMlib::Angle angle1= (legs[i]->getJoints()[0]->getGlobalDir())
                .getAngle(legs[i]->leg_base->getGlobalDir());
@@ -90,52 +95,78 @@ void Hexapod_controller::walk_forward(Gait gait, double dt){
                .getAngle(legs[i]->getJoints()[1]->getGlobalDir())-6.28319;
 
        if(i !=0  && i !=5 ){
-           legs[i]->getJoints()[0]->rotate((coxaAngle +angle1)*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-           legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 )*var, GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-           legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3)*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+           legs[i]->getJoints()[0]->rotate((coxaAngle +angle1),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+           legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+           legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
        }
        else{
-           legs[i]->getJoints()[0]->rotate((coxaAngle -angle1)*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-           legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 )*var, GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-           legs[i]->getJoints()[2]->rotate(((tibiaAngle+angle3))*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+           legs[i]->getJoints()[0]->rotate((coxaAngle -angle1),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+           legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+           legs[i]->getJoints()[2]->rotate(((tibiaAngle+angle3)),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
        }
 
-   }
 
+   }
+}
+    /*
    if(tripod_steps[0] == 2 || tripod_steps[3]==2){
        translation_speed = (tripod->step_size )/(timespan);
-       body->translate( GMlib::Vector<float,3>(0.0f,-translation_speed*tick , 0.0f));
-   }
+       body->translate( GMlib::Vector<float,3>(0.0f,-translation_speed*tick , 0.0f));*/
+//   }
 
-   if(tick< timespan-dt){
-       tick+=dt;
-   }
-   else{
-       if(tripod_steps[0]<4){
-           tripod_steps[0]++;
-           tripod_steps[2]++;
-           tripod_steps[4]++;
+//   if(tick< timespan-dt){
+//       tick+=dt;
+//   }
+    /* Wave */
+//   else {
+
+       if(wave_steps[active_leg] == 3) {
+
+           wave_steps[active_leg] = 4;
+
+           if(active_leg < 5) {
+               active_leg++;
+           }
+           else active_leg = 0;
+
+           wave_steps[active_leg] = 1;
+
+       }
+       else {
+           if(wave_steps[active_leg] < 4) wave_steps[active_leg]++;
+           else wave_steps[active_leg] = 1;
        }
 
-       else{
-           tripod_steps[0]=1;
-           tripod_steps[2]=1;
-           tripod_steps[4]=1;
-       }
-       if(tripod_steps[3]<4){
-           tripod_steps[1]++;
-           tripod_steps[3]++;
-           tripod_steps[5]++;
-       }
 
-       else{
-           tripod_steps[1]=1;
-           tripod_steps[3]=1;
-           tripod_steps[5]=1;
-       }
-       tick =0.0;
-   }
+   /* Tripod */
+//   else{
+//       if(tripod_steps[0]<4){
+//           tripod_steps[0]++;
+//           tripod_steps[2]++;
+//           tripod_steps[4]++;
+//       }
 
+//       else{
+//           tripod_steps[0]=1;
+//           tripod_steps[2]=1;
+//           tripod_steps[4]=1;
+//       }
+//       if(tripod_steps[3]<4){
+//           tripod_steps[1]++;
+//           tripod_steps[3]++;
+//           tripod_steps[5]++;
+//       }
+
+//       else{
+//           tripod_steps[1]=1;
+//           tripod_steps[3]=1;
+//           tripod_steps[5]=1;
+//       }
+//       tick =0.0;
+//   }
+
+
+       t++;
 }
 
 void Hexapod_controller::localSimulate(double dt) {
@@ -146,7 +177,7 @@ void Hexapod_controller::localSimulate(double dt) {
         IK = true;
     }
 
-    walk_forward(*tripod.get(),dt);
+    walk_forward(*wave.get(),dt);
 
 
 }
@@ -157,7 +188,7 @@ void Hexapod_controller::run_inverse_kinematicts(){
     for(unsigned int i =0;i<legs.size();i++){
         tip_position=   legs[i]->get_tip_pos();
         auto count = 0;
-        auto index =tripod_steps[i];
+        auto index =wave_steps[i];
         while(count <4){
             update_target_positions(*(tripod.get()),i,index);
             update_angles(i,index-1);
