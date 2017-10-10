@@ -25,59 +25,59 @@ Leg::Leg(GMlib::Point<float, 3> pos, bool orientation)
      leg_base->setMaterial(GMlib::GMmaterial::blackRubber());
      leg_base->replot(10  ,10,1,1);
 
-     auto x = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.8,0.0,0.0));
-     x->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-     x->toggleDefaultVisualizer();
-     x->replot(10,1);
-     x->setColor(GMlib::GMcolor::red());
-     leg_base->insert(x);
+//     auto x = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.8,0.0,0.0));
+//     x->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+//     x->toggleDefaultVisualizer();
+//     x->replot(10,1);
+//     x->setColor(GMlib::GMcolor::red());
+//     leg_base->insert(x);
 
-     auto y = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.8,0.0));
-     y->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-     y->toggleDefaultVisualizer();
-     y->replot(10,1);
-     y->setColor(GMlib::GMcolor::green());
-     leg_base->insert(y);
+//     auto y = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.8,0.0));
+//     y->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+//     y->toggleDefaultVisualizer();
+//     y->replot(10,1);
+//     y->setColor(GMlib::GMcolor::green());
+//     leg_base->insert(y);
 
-     auto z = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.0,0.8));
-     z->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-     z->toggleDefaultVisualizer();
-     z->replot(10,1);
-     z->setColor(GMlib::GMcolor::blue());
-     leg_base->insert(z);
+//     auto z = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.0,0.8));
+//     z->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+//     z->toggleDefaultVisualizer();
+//     z->replot(10,1);
+//     z->setColor(GMlib::GMcolor::blue());
+//     leg_base->insert(z);
 
 
     right = orientation;
     adjustPositions();
     link();
-    auto joint0= joints[0]->getPos();
-    this->translate(GMlib::Vector<float,3>(joint0(0),joint0(1),joint0(2)));
+//    auto joint0= joints[0]->getPos();
+//    this->translate(GMlib::Vector<float,3>(joint0(0),joint0(1),joint0(2)));
 
 //    update_tip_position();
 
-    for(unsigned int i = 0; i<3;i++){
+//    for(unsigned int i = 0; i<3;i++){
 
-        auto x = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.8,0.0,0.0));
-        x->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-        x->toggleDefaultVisualizer();
-        x->replot(10,1);
-        x->setColor(GMlib::GMcolor::red());
-        joints[i]->insert(x);
+//        auto x = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.8,0.0,0.0));
+//        x->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+//        x->toggleDefaultVisualizer();
+//        x->replot(10,1);
+//        x->setColor(GMlib::GMcolor::red());
+//        joints[i]->insert(x);
 
-        auto y = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.8,0.0));
-        y->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-        y->toggleDefaultVisualizer();
-        y->replot(10,1);
-        y->setColor(GMlib::GMcolor::green());
-         joints[i]->insert(y);
+//        auto y = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.8,0.0));
+//        y->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+//        y->toggleDefaultVisualizer();
+//        y->replot(10,1);
+//        y->setColor(GMlib::GMcolor::green());
+//         joints[i]->insert(y);
 
-        auto z = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.0,0.8));
-        z->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-        z->toggleDefaultVisualizer();
-        z->replot(10,1);
-        z->setColor(GMlib::GMcolor::blue());
-         joints[i]->insert(z);
-    }
+//        auto z = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.0,0.8));
+//        z->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+//        z->toggleDefaultVisualizer();
+//        z->replot(10,1);
+//        z->setColor(GMlib::GMcolor::blue());
+//         joints[i]->insert(z);
+//    }
 
 }
 
@@ -206,29 +206,6 @@ void Leg::adjustPositions()
                 femur->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -0.8f ));
                 tibia->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 1.0f ));
             }
-
-//        if(!right) {
-
-//            joints[0]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ) );
-//            joints[0]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f ) );
-
-//            joints[0]->translate( GMlib::Vector<float,3>( 0.0f, -2.0f, 0.0f ) );
-
-//            coxa->rotate(GMlib::Angle(90), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f ));
-//            // Joint between Coxas and Femur
-//            joints[1]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 0.5f ) );
-
-//            // Joint between Femur and Tibia
-//            joints[2]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 0.8f ) );
-
-//            // Rotate Tibia joint - pointing down
-//            joints[2]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f ) );
-
-//            coxa->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 0.5f ) );
-//            femur->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 0.8f ));
-//            tibia->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 1.0f ));
-
-//        }
 }
 
 void Leg::link()
@@ -268,7 +245,7 @@ IKAngles Leg::inverseKinematics(GMlib::Point<float, 3> targetPosition){
 
     auto coxaAngle = std::atan2(targetPosition(1),targetPosition(0));
     auto tibiaAngle =  6.28319 - std::acos((l-femurHeight*femurHeight-tibiaHeight*tibiaHeight)/(2*femurHeight*tibiaHeight));
-    auto femurAngle = std::atan2(r,z0)-std::atan2(femurHeight+tibiaHeight*std::cos(tibiaAngle), tibiaHeight* std::sin(tibiaAngle) );
+    auto femurAngle =  std::atan2(r,z0)-std::atan2(femurHeight+tibiaHeight*std::cos(tibiaAngle), tibiaHeight* std::sin(tibiaAngle) );
 
     auto angles = IKAngles(coxaAngle, femurAngle, tibiaAngle);
     return angles;
@@ -306,8 +283,4 @@ void Leg::update_tip_position(){
     present_inverted.invertOrthoNormal(); //scene to base
 
     tip_base_pos = present_inverted * (tip_global_pos);
-}
-
-void Leg::localSimulate(double dt){
-
 }

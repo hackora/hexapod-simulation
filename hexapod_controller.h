@@ -38,11 +38,12 @@ private:
     std::vector<GMlib::Vector<float,3>> target_positions;
     std::vector<std::vector<IKAngles>> angles;  //leg/step (3 angles)
     void localSimulate(double dt) override;
-    void update_target_positions(Gait gait);
-    void update_angles();
+    void update_target_positions(Gait gait, int i);
+    void update_angles(int i);
     unsigned int time=0;
-    int tripod_steps[6] = {1,2,1,2,1,2};
+    int tripod_steps[6] = {1,3,1,3,1,3};
     int t=0;
+    bool IK = true;
 
 
 };

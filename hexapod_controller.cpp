@@ -21,53 +21,60 @@ void Hexapod_controller::addHexapod(std::shared_ptr<Hexapod> hexapod){
     legs = hexapod->getLegs();
 }
 
-void Hexapod_controller::update_target_positions(Gait gait){
+void Hexapod_controller::update_target_positions(Gait gait, int i){
 //   for(unsigned int i =0;i<legs.size();i++){
 
 
-       switch(tripod_steps[0]){
+       switch(tripod_steps[i]){
          case 1:{
-           auto tip_position = legs[0]->get_tip_pos();
+           auto tip_position = legs[i]->get_tip_pos();
            auto z=tip_position[2] + gait.lift_height;
-           target_positions[0]  = GMlib::Point<float,3>(tip_position[0] ,tip_position[1] ,z);
+           target_positions[i]  = GMlib::Point<float,3>(tip_position[0] ,tip_position[1] ,z);
            break;
        }
-       case 2:{
-           auto tip_position = target_positions[0];
+       case 3:{
+           auto tip_position = legs[i]->get_tip_pos();
            auto z=tip_position[2] - gait.lift_height;
-           if(std::abs((tip_position[2] - gait.lift_height) -2)>=0.0001)
-               target_positions[0]  = GMlib::Point<float,3>(tip_position[0] ,tip_position[1] ,z);
+           if(std::abs((tip_position[2] - gait.lift_height) - (-2))<=0.1)
+               target_positions[i]  = GMlib::Point<float,3>(tip_position[0] ,tip_position[1] ,z);
            else
-               target_positions[0]  = GMlib::Point<float,3>(tip_position[0] ,tip_position[1] ,tip_position[2]);
+               target_positions[i]  = GMlib::Point<float,3>(tip_position[0] ,tip_position[1] ,tip_position[2]);
            break;
      }
-       case 3:{
-           auto tip_position = target_positions[0];
-           auto y = tip_position[1] + gait.step_size;
-//           auto x = std::sqrt( tip_position[0]*tip_position[0]+ tip_position[1]*tip_position[1] -y*y);
+       case 2:{
+           auto tip_position = legs[i]->get_tip_pos();
+           float y =0.0f ;
+           if(legs[i]->isRight())
+              y = tip_position[1] + gait.step_size;
+           else
+               y = tip_position[1] - gait.step_size;
            auto l = std::sqrt(tip_position[0]*tip_position[0]+tip_position[1]*tip_position[1]);
            auto x = l * std::sin(std::acos(y/l));
-           target_positions[0]  = GMlib::Point<float,3>(x , y ,tip_position[2]);
+           target_positions[i]  = GMlib::Point<float,3>(x , y ,tip_position[2]);
            break;
      }
      case 4:{
-           auto tip_position = target_positions[0];
-           auto y = tip_position[1] - gait.step_size;
+           auto tip_position = legs[i]->get_tip_pos();
+           auto y = tip_position[1];
+           if(legs[i]->isRight())
+              y  -= gait.step_size;
+           else
+               y += gait.step_size;
            auto l = std::sqrt(tip_position[0]*tip_position[0]+tip_position[1]*tip_position[1]);
            auto x = l * std::sin(std::acos(y/l));
-           target_positions[0]  = GMlib::Point<float,3>(x , y ,tip_position[2]);
+           target_positions[i]  = GMlib::Point<float,3>(x , y ,tip_position[2]);
            break;
    }
        }
 //   }
 
 }
-void Hexapod_controller::update_angles(){
+void Hexapod_controller::update_angles(int i){
 
-    for(unsigned int i =0;i<legs.size();i++){
+//    for(unsigned int i =0;i<legs.size();i++){
         auto angle = legs[i]->inverseKinematics(target_positions[i]);
-        angles[i][tripod_steps[i]]=angle ;
-    }
+        angles[i][tripod_steps[i]-1]=angle ;
+//    }
 }
 
 void Hexapod_controller::walk_forward(Gait gait, int step, bool stepChanged, double dt){
@@ -128,130 +135,162 @@ void Hexapod_controller::localSimulate(double dt) {
 //    else
 //        time =0;
 
-    if(t==0){ //lift
-                auto _matrix_body = body->getMatrix();
-                update_target_positions(Tripod );
-                update_angles();
 
-        //    for(unsigned int i=0;i<legs.size();i++){
-                auto coxaAngle =  angles[0][tripod_steps[0]].coxaAngle;
-                auto femurAngle = angles[0][tripod_steps[0]].femurAngle;
-                auto tibiaAngle = angles[0][tripod_steps[0]].tibiaAngle;
+ if((t == 0) || (t == 100) || (t == 200) || (t == 300) || (t == 400) || (t == 500) || (t == 600) ||  (t == 700) || (t == 800) || (t == 900) || (t == 1000)){
 
-                GMlib::Angle angle1= (legs[0]->getJoints()[0]->getGlobalDir())
-                        .getAngle(legs[0]->leg_base->getGlobalDir());
-                GMlib::Angle angle2= (legs[0]->getJoints()[1]->getGlobalDir())
-                        .getAngle(legs[0]->getJoints()[0]->getGlobalDir());
-                GMlib::Angle angle3=  (legs[0]->getJoints()[2]->getGlobalDir())
-                        .getAngle(legs[0]->getJoints()[1]->getGlobalDir());
+    for(unsigned int i=0;i<6;i++){
+//            if(t==15){
+                update_target_positions(*(tripod.get()),i );
+                update_angles(i);
+//            }
 
-                legs[0]->getJoints()[0]->rotate(coxaAngle-angle1,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
 
-                legs[0]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
 
-                legs[0]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            auto tip_position = legs[i]->get_tip_pos();
 
-                 auto tip_position = legs[0]->get_tip_pos();
-                 std::cout<<"wh";
+            if(target_positions[i]!=tip_position){
+                switch (tripod_steps[i]) {
+                case 1:{
+
+                    update_target_positions(*(tripod.get()),i );
+
+                    auto coxaAngle =  angles[i][tripod_steps[i]-1].coxaAngle;
+                    auto femurAngle = angles[i][tripod_steps[i]-1].femurAngle;
+                    auto tibiaAngle = angles[i][tripod_steps[i]-1].tibiaAngle;
+
+                    GMlib::Angle angle1= (legs[i]->getJoints()[0]->getGlobalDir())
+                            .getAngle(legs[i]->leg_base->getGlobalDir());
+                    GMlib::Angle angle2= (legs[i]->getJoints()[1]->getGlobalDir())
+                            .getAngle(legs[i]->getJoints()[0]->getGlobalDir());
+                    GMlib::Angle angle3=  (legs[i]->getJoints()[2]->getGlobalDir())
+                            .getAngle(legs[i]->getJoints()[1]->getGlobalDir());
+
+                    if(i !=0  && i !=5 ){
+                        legs[i]->getJoints()[0]->rotate((coxaAngle +angle1),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                    }
+                    else{
+                        legs[i]->getJoints()[0]->rotate((coxaAngle -angle1),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                    }
+
+
+
+                    tripod_steps[i]++;
+                    break;
+
+                }
+                case 2:{
+                    update_target_positions(*(tripod.get()),i );
+                    update_angles(i);
+
+                    auto coxaAngle =  angles[i][tripod_steps[i]-1].coxaAngle;
+                    auto femurAngle = angles[i][tripod_steps[i]-1].femurAngle;
+                    auto tibiaAngle = angles[i][tripod_steps[i]-1].tibiaAngle;
+
+                    GMlib::Angle angle1= (legs[i]->getJoints()[0]->getGlobalDir())
+                            .getAngle(legs[i]->leg_base->getGlobalDir());
+                    GMlib::Angle angle2= (legs[i]->getJoints()[1]->getGlobalDir())
+                            .getAngle(legs[i]->getJoints()[0]->getGlobalDir());
+                    GMlib::Angle angle3=  (legs[i]->getJoints()[2]->getGlobalDir())
+                            .getAngle(legs[i]->getJoints()[1]->getGlobalDir());
+
+                    if(i !=0  && i !=5 ){
+                        legs[i]->getJoints()[0]->rotate((coxaAngle +angle1),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                    }
+                    else{
+                        legs[i]->getJoints()[0]->rotate((coxaAngle -angle1),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                    }
+
+//                    body->translateGlobal( GMlib::Vector<float,3>(0.0f,tripod->step_size , 0.0f));
+
+                    tripod_steps[i]++;
+                    break;
+
+                }
+                case 3:{
+                    update_target_positions(*(tripod.get()),i );
+                    update_angles(i);
+
+                    auto coxaAngle =  angles[i][tripod_steps[i]-1].coxaAngle;
+                    auto femurAngle = angles[i][tripod_steps[i]-1].femurAngle;
+                    auto tibiaAngle = angles[i][tripod_steps[i]-1].tibiaAngle;
+
+                    GMlib::Angle angle1= (legs[i]->getJoints()[0]->getGlobalDir())
+                            .getAngle(legs[i]->leg_base->getGlobalDir());
+                    GMlib::Angle angle2= (legs[i]->getJoints()[1]->getGlobalDir())
+                            .getAngle(legs[i]->getJoints()[0]->getGlobalDir());
+                    GMlib::Angle angle3=  (legs[i]->getJoints()[2]->getGlobalDir())
+                            .getAngle(legs[i]->getJoints()[1]->getGlobalDir());
+
+                    if(i !=0  && i !=5 ){
+                        legs[i]->getJoints()[0]->rotate((coxaAngle +angle1),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                    }
+                    else{
+                        legs[i]->getJoints()[0]->rotate((coxaAngle -angle1),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                    }
+
+                    tripod_steps[i]++;
+                    break;
+
+                }
+                case 4:{
+                    update_target_positions(*(tripod.get()),i );
+                    update_angles(i);
+
+                    auto coxaAngle =  angles[i][tripod_steps[i]-1].coxaAngle;
+                    auto femurAngle = angles[i][tripod_steps[i]-1].femurAngle;
+                    auto tibiaAngle = angles[i][tripod_steps[i]-1].tibiaAngle;
+
+                    GMlib::Angle angle1= (legs[i]->getJoints()[0]->getGlobalDir())
+                            .getAngle(legs[i]->leg_base->getGlobalDir());
+                    GMlib::Angle angle2= (legs[i]->getJoints()[1]->getGlobalDir())
+                            .getAngle(legs[i]->getJoints()[0]->getGlobalDir());
+                    GMlib::Angle angle3=  (legs[i]->getJoints()[2]->getGlobalDir())
+                            .getAngle(legs[i]->getJoints()[1]->getGlobalDir());
+
+                    if(i !=0  && i !=5 ){
+                        legs[i]->getJoints()[0]->rotate((coxaAngle +angle1),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                    }
+                    else{
+                        legs[i]->getJoints()[0]->rotate((coxaAngle -angle1),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                        legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                    }
+
+//                    body->translateGlobal( GMlib::Vector<float,3>(0.0f,tripod->step_size , 0.0f));
+                    tripod_steps[i] = 1;
+                    break;
+                }
+
+            }
+        }
+            else{
+                if(tripod_steps[i]<4)
+                    tripod_steps[i]++;
+                else
+                    tripod_steps[i]=1;
+                update_target_positions(*(tripod.get()),i );
+                update_angles(i);
+            }
+        }
+ }
+
+        if(t <500)
+            t++;
+        else
+            t =0;
     }
 
-    else if(t==50){//forward
-
-    auto tip_position = legs[0]->get_tip_pos();
-        tripod_steps[0] =3;
-        update_target_positions(Tripod );
-        update_angles();
-
-//    for(unsigned int i=0;i<legs.size();i++){
-        auto coxaAngle =  angles[0][tripod_steps[0]].coxaAngle;
-        auto femurAngle = angles[0][tripod_steps[0]].femurAngle;
-        auto tibiaAngle = angles[0][tripod_steps[0]].tibiaAngle;
-
-        GMlib::Angle angle1= (legs[0]->getJoints()[0]->getGlobalDir())
-                .getAngle(legs[0]->leg_base->getGlobalDir());
-        GMlib::Angle angle2= (legs[0]->getJoints()[1]->getGlobalDir())
-                .getAngle(legs[0]->getJoints()[0]->getGlobalDir());
-        GMlib::Angle angle3=  (legs[0]->getJoints()[2]->getGlobalDir())
-                .getAngle(legs[0]->getJoints()[1]->getGlobalDir());
-
-        legs[0]->getJoints()[0]->rotate(coxaAngle-angle1,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-
-        legs[0]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-
-        legs[0]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-    }
-    else if(t==100){//down
-        tripod_steps[0] =2;
-        update_target_positions(Tripod );
-        update_angles();
-
-//    for(unsigned int i=0;i<legs.size();i++){
-        auto coxaAngle =  angles[0][tripod_steps[0]].coxaAngle;
-        auto femurAngle = angles[0][tripod_steps[0]].femurAngle;
-        auto tibiaAngle = angles[0][tripod_steps[0]].tibiaAngle;
-
-
-        GMlib::Angle angle1= (legs[0]->getJoints()[0]->getGlobalDir())
-                .getAngle(legs[0]->leg_base->getGlobalDir());
-        GMlib::Angle angle2= (legs[0]->getJoints()[1]->getGlobalDir())
-                .getAngle(legs[0]->getJoints()[0]->getGlobalDir());
-        GMlib::Angle angle3=  (legs[0]->getJoints()[2]->getGlobalDir())
-                .getAngle(legs[0]->getJoints()[1]->getGlobalDir());
-
-        legs[0]->getJoints()[0]->rotate(coxaAngle-angle1,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-
-        legs[0]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-
-        legs[0]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-    }
-    else if(t==150){//backward
-        tripod_steps[0] =4;
-        update_target_positions(Tripod );
-        update_angles();
-
-//    for(unsigned int i=0;i<legs.size();i++){
-        auto coxaAngle =  angles[0][tripod_steps[0]].coxaAngle;
-        auto femurAngle = angles[0][tripod_steps[0]].femurAngle;
-        auto tibiaAngle = angles[0][tripod_steps[0]].tibiaAngle;
-
-        GMlib::Angle angle1= (legs[0]->getJoints()[0]->getGlobalDir())
-                .getAngle(legs[0]->leg_base->getGlobalDir());
-        GMlib::Angle angle2= (legs[0]->getJoints()[1]->getGlobalDir())
-                .getAngle(legs[0]->getJoints()[0]->getGlobalDir());
-        GMlib::Angle angle3=  (legs[0]->getJoints()[2]->getGlobalDir())
-                .getAngle(legs[0]->getJoints()[1]->getGlobalDir());
-
-        legs[0]->getJoints()[0]->rotate(coxaAngle-angle1,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-
-        legs[0]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-
-        legs[0]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-
-    }
-
-    else if(t==200){
-        tripod_steps[0] =1;
-        update_target_positions(Tripod );
-        update_angles();
-
-//    for(unsigned int i=0;i<legs.size();i++){
-        auto coxaAngle =  angles[0][tripod_steps[0]].coxaAngle;
-        auto femurAngle = angles[0][tripod_steps[0]].femurAngle;
-        auto tibiaAngle = angles[0][tripod_steps[0]].tibiaAngle;
-
-        GMlib::Angle angle1= (legs[0]->getJoints()[0]->getGlobalDir())
-                .getAngle(legs[0]->leg_base->getGlobalDir());
-        GMlib::Angle angle2= (legs[0]->getJoints()[1]->getGlobalDir())
-                .getAngle(legs[0]->getJoints()[0]->getGlobalDir());
-        GMlib::Angle angle3=  (legs[0]->getJoints()[2]->getGlobalDir())
-                .getAngle(legs[0]->getJoints()[1]->getGlobalDir());
-
-        legs[0]->getJoints()[0]->rotate(coxaAngle-angle1,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-
-        legs[0]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-
-        legs[0]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
-        t =0;
-    }
-    t++;
-}

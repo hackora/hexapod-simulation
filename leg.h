@@ -39,6 +39,7 @@ class Leg: public  GMlib::SceneObject {
         std::shared_ptr<GMlib::PCylinder<float>> getCoxa();
         std::shared_ptr<GMlib::PCylinder<float>> getFemur();
         std::shared_ptr<Tibia> getTibia();
+        bool isRight(){return right;}
 
 
     protected:
@@ -46,7 +47,6 @@ class Leg: public  GMlib::SceneObject {
         std::shared_ptr<GMlib::PCylinder<float>> femur;
         std::shared_ptr<Tibia> tibia;
         std::vector<std::shared_ptr< GMlib::PSphere<float>>> joints;    // 3
-        void localSimulate(double dt)override;
 
 
     private:

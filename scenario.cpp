@@ -65,38 +65,39 @@ void Scenario::initializeScenario() {
 
 
 
-  auto g= new GMlib::PSphere<float>(0.2);
+//  auto g= new GMlib::PSphere<float>(0.2);
 
-  g->toggleDefaultVisualizer();
-  g->setMaterial(GMlib::GMmaterial::polishedBronze());
-  g->translate( GMlib::Vector<float,3>( 1.0f, 0.0f, 0.0f ) );
-  g->translate(GMlib::Vector<float,3>(0.0f,1.5f,0.0f));
+//  g->toggleDefaultVisualizer();
+//  g->setMaterial(GMlib::GMmaterial::polishedBronze());
+//  g->translate( GMlib::Vector<float,3>( 1.0f, 0.0f, 0.0f ) );
+////  g->translate(GMlib::Vector<float,3>(0.0f,1.5f,0.0f));
 
 
-  auto x = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.8,0.0,0.0));
-  x->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-  x->toggleDefaultVisualizer();
-  x->replot(10,1);
-  x->setColor(GMlib::GMcolor::red());
-  g->insert(x);
+//  auto x = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.8,0.0,0.0));
+//  x->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+//  x->toggleDefaultVisualizer();
+//  x->replot(10,1);
+//  x->setColor(GMlib::GMcolor::red());
+//  g->insert(x);
 
-  auto y = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.8,0.0));
-  y->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-  y->toggleDefaultVisualizer();
-  y->replot(10,1);
-  y->setColor(GMlib::GMcolor::green());
-  g->insert(y);
+//  auto y = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.8,0.0));
+//  y->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+//  y->toggleDefaultVisualizer();
+//  y->replot(10,1);
+//  y->setColor(GMlib::GMcolor::green());
+//  g->insert(y);
 
-  auto z = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.0,0.8));
-  z->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-  z->toggleDefaultVisualizer();
-  z->replot(10,1);
-  z->setColor(GMlib::GMcolor::blue());
-   g->insert(z);
+//  auto z = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.0,0.8));
+//  z->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
+//  z->toggleDefaultVisualizer();
+//  z->replot(10,1);
+//  z->setColor(GMlib::GMcolor::blue());
+//   g->insert(z);
 
-  g->translate(GMlib::Vector<float,3>(1.83848f,1.83848f,-2.0f));
-  g->replot(10  ,10,1,1);
-  scene()->insert(g);
+//  g->translate(GMlib::Vector<float,3>(1.83848f,1.83848f,-2.0f));
+
+//  g->replot(10  ,10,1,1);
+//  scene()->insert(g);
   _simulator = std::make_shared<Simulator>(*scene());
   _simulator->setupSimulator();
 

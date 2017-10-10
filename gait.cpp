@@ -2,9 +2,9 @@
 
 
 Gait::Gait(gait_type type) {
-    lift_height = 1.5f;
+    lift_height = 0.8f;
     id = type;
-    step_size = 0.5f;
+    step_size = 0.1f;
 
     set_supportLegs();
     set_dutyFactor();
