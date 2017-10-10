@@ -208,7 +208,7 @@ void Hexapod_controller::localSimulate(double dt) {
                         legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
                     }
 
-//                    body->translateGlobal( GMlib::Vector<float,3>(0.0f,tripod->step_size , 0.0f));
+                    body->translate( GMlib::Vector<float,3>(0.0f,-(tripod->step_size) , 0.0f));
 
                     tripod_steps[i]++;
                     break;
@@ -270,7 +270,7 @@ void Hexapod_controller::localSimulate(double dt) {
                         legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
                     }
 
-//                    body->translateGlobal( GMlib::Vector<float,3>(0.0f,tripod->step_size , 0.0f));
+                    body->translate( GMlib::Vector<float,3>(0.0f,-(tripod->step_size) , 0.0f));
                     tripod_steps[i] = 1;
                     break;
                 }
