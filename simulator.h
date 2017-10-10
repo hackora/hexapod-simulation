@@ -2,6 +2,7 @@
 #define SIMULATOR_H
 
 #include"collision_library.h"
+#include "hexapod_controller.h"
 #include<gmParametricsModule>
 #include<vector>
 #include<memory>
@@ -23,10 +24,12 @@ public:
 
     void setupSimulator();
     void setupGame();
+    void insertto(std::shared_ptr< Hexapod> hexapod){ hexapod->insert(_scene);}
 
 private:
     GMlib::Scene&                                      _scene;
     collision::collision_controller          _controller;
+    Hexapod_controller                          _hex_controller;
     DynSphereVector                               _dspheres;
     PlaneVector                                          _planes;
     BezierVector                                        _beziers;

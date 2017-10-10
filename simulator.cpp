@@ -7,12 +7,22 @@ Simulator::Simulator(GMlib::Scene& scene) : _scene{scene}{
 
 void Simulator::setupSimulator(){
 
-    auto hexapod = new Hexapod();
+    auto hexapod = std::make_shared< Hexapod>();
     hexapod->toggleDefaultVisualizer();
     hexapod->replot();
     hexapod->setMaterial(GMlib::GMmaterial::blackPlastic(),GMlib::GMmaterial::sapphire(),
                                      GMlib::GMmaterial::ruby(),GMlib::GMmaterial::blackRubber(),GMlib::GMmaterial::snow());
-    hexapod->insert(_scene);
+    _hex_controller = Hexapod_controller();
+    double dt = 0.1;
+    _scene.enabledFixedDt();
+    _scene.setFixedDt(dt);
+    insertto(hexapod);
+    _hex_controller.addHexapod(hexapod);
+    _scene.insert(&_hex_controller);
+
+
+
+
 
 }
 

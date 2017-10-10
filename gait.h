@@ -1,5 +1,5 @@
-#ifndef HEXAPOD_CONTROLLER_H
-#define HEXAPOD_CONTROLLER_H
+#ifndef GAIT_H
+#define GAIT_H
 
 #include<gmParametricsModule>
 #include <chrono>
@@ -8,7 +8,7 @@ using seconds_type
     = std::chrono::duration<double>; // std::ratio<1,1> is implicit
                                      // default and means seconds
 
-enum gait_type { Tripod, Wave };
+enum gait_type{ Tripod, Wave };
 
 class Gait {
 
@@ -23,9 +23,6 @@ public:
 
 
 
-protected:
-
-private:
 
     float lift_height;
     seconds_type stance_time;
@@ -39,6 +36,14 @@ private:
     seconds_type cycle_time = seconds_type(1.0);
 
 
+
+protected:
+
+private:
+
+
+
+
 };
 
-#endif //HEXAPOD_CONTROLLER_H
+#endif //GAIT_H
