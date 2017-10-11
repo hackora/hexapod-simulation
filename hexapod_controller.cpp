@@ -32,7 +32,7 @@ void Hexapod_controller::update_target_positions(Gait gait, int i, int j ){
     }
     case 2:{
         float y =0.0f ;
-        if(legs[i]->isRight())
+        if(legs[i]->isRight() && forward)
             y = tip_position[1] + gait.step_size;
         else
             y = tip_position[1] - gait.step_size;
@@ -53,7 +53,7 @@ void Hexapod_controller::update_target_positions(Gait gait, int i, int j ){
     }
     case 4:{
         auto y = tip_position[1];
-        if(legs[i]->isRight())
+        if(legs[i]->isRight() && forward)
             y  -= gait.step_size;
         else
             y += gait.step_size;
@@ -71,9 +71,14 @@ void Hexapod_controller::update_angles(int i,int j){
     angles[i][j]= angle ;
 }
 
+void Hexapod_controller::walk_backward(Gait gait,double dt){
+    forward =false;
+    walk_forward(*tripod.get(),dt);
+}
+
 void Hexapod_controller::walk_forward(Gait gait, double dt){
 
-    auto var = tick/(float)timespan;
+    auto var = tick/timespan;
 
     for(unsigned int i =0;i<6;i++){
 
@@ -103,7 +108,11 @@ void Hexapod_controller::walk_forward(Gait gait, double dt){
 
             if(tripod_steps[0] == 2 || tripod_steps[3]==2){
                 translation_speed = (tripod->step_size )/(timespan);
-                body->translate( GMlib::Vector<float,3>(0.0f,-translation_speed*tick/50 , 0.0f));
+                if(forward)
+                    body->translate( GMlib::Vector<float,3>(0.0f,-translation_speed*tick/100 , 0.0f));
+                else
+                    body->translate( GMlib::Vector<float,3>(0.0f,-translation_speed*tick/100, 0.0f));
+
             }
         }
 
@@ -126,7 +135,10 @@ void Hexapod_controller::walk_forward(Gait gait, double dt){
 
             if(wave_steps[0] == 2  || wave_steps[2] == 2 ||  wave_steps[3] == 2 || wave_steps[5] == 2){
                 translation_speed = (tripod->step_size )/(timespan);
-                body->translate( GMlib::Vector<float,3>(0.0f,-translation_speed*tick/200 , 0.0f));
+                if(forward)
+                    body->translate( GMlib::Vector<float,3>(0.0f,-translation_speed*tick/200 , 0.0f));
+                else
+                    body->translate( GMlib::Vector<float,3>(0.0f,translation_speed*tick/200 , 0.0f));
             }
         }
     }
@@ -183,15 +195,21 @@ void Hexapod_controller::walk_forward(Gait gait, double dt){
     }
 }
 
+void Hexapod_controller::run(double dt){
+    timespan = 0.08;  //dt*5
+    forward = true;
+    walk_forward(*tripod.get(),dt);
+}
+
 void Hexapod_controller::localSimulate(double dt) {
 
     if(!IK){
-        run_inverse_kinematicts(*wave.get());
+        run_inverse_kinematicts(*tripod.get());
         std::cout<<"Inverse Kinematics is run !"<<std::endl;
         IK = true;
     }
 
-    walk_forward(*wave.get(),dt);
+    run(dt);
 
 
 }

@@ -23,8 +23,8 @@ public:
 
 protected:
     void walk_forward(Gait gait, double dt);
-    void walk_backward(Gait gait, double dt);
-    void run();
+    void walk_backward(Gait gait=Tripod, double dt =0.016);
+    void run(double dt =0.016);
     void rotate_in_place();
     void go_from_A_to_B();
 
@@ -48,12 +48,13 @@ private:
     int tripod_steps[6] = {1,3,1,3,1,3};
     bool IK = false;
 
-    double timespan = 0.8;
+    double timespan = 0.16; //dt*10
     double tick =0.0;
     double rotation_speed= 2.0;
     double translation_speed=1.0;
 
     void run_inverse_kinematicts(Gait gait);
+    bool forward = true;
 
 };
 
