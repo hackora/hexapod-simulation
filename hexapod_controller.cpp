@@ -124,9 +124,9 @@ void Hexapod_controller::walk_forward(Gait gait, double dt){
                 legs[i]->getJoints()[2]->rotate(((tibiaAngle+angle3))*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
             }
 
-            if(wave_steps[0] == 2 || wave_steps[3]==2){
+            if(wave_steps[0] == 2  || wave_steps[2] == 2 ||  wave_steps[3] == 2 || wave_steps[5] == 2){
                 translation_speed = (tripod->step_size )/(timespan);
-                body->translate( GMlib::Vector<float,3>(0.0f,-translation_speed*tick/100 , 0.0f));
+                body->translate( GMlib::Vector<float,3>(0.0f,-translation_speed*tick/200 , 0.0f));
             }
         }
     }
@@ -186,12 +186,12 @@ void Hexapod_controller::walk_forward(Gait gait, double dt){
 void Hexapod_controller::localSimulate(double dt) {
 
     if(!IK){
-        run_inverse_kinematicts(*tripod.get());
+        run_inverse_kinematicts(*wave.get());
         std::cout<<"Inverse Kinematics is run !"<<std::endl;
         IK = true;
     }
 
-    walk_forward(*tripod.get(),dt);
+    walk_forward(*wave.get(),dt);
 
 
 }
