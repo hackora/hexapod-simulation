@@ -49,13 +49,12 @@ private:
     bool IK = false;
 
     int t = 0;
-    double timespan = 4;
+    double timespan = 4.0;
     double tick =0.0;
     double rotation_speed= 2.0;
     double translation_speed=1.0;
 
-    void run_inverse_kinematicts();
-
+    void run_inverse_kinematicts(Gait gait);
 
 };
 
