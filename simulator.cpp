@@ -13,17 +13,12 @@ void Simulator::setupSimulator(){
     hexapod->setMaterial(GMlib::GMmaterial::blackPlastic(),GMlib::GMmaterial::sapphire(),
                                      GMlib::GMmaterial::ruby(),GMlib::GMmaterial::blackRubber(),GMlib::GMmaterial::snow());
     _hex_controller = Hexapod_controller();
-    double dt = 1.0;
+    double dt = 0.1;
     _scene.enabledFixedDt();
     _scene.setFixedDt(dt);
-    insertto(hexapod);
+    insert_to_scene(hexapod);
     _hex_controller.addHexapod(hexapod);
     _scene.insert(&_hex_controller);
-
-
-
-
-
 }
 
 void Simulator::setupGame(){

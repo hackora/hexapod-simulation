@@ -24,7 +24,7 @@ public:
 
     void setupSimulator();
     void setupGame();
-    void insertto(std::shared_ptr< Hexapod> hexapod){ hexapod->insert(_scene);}
+    void insert_to_scene(std::shared_ptr<Hexapod> hexapod){ hexapod->insert(_scene);}
 
 private:
     GMlib::Scene&                                      _scene;

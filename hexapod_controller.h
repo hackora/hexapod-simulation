@@ -43,13 +43,12 @@ private:
     void update_angles(int i, int j);
     unsigned int time=0;
 
-    int wave_steps[6] = {1, 3, 3, 3, 3, 3};
+    int wave_steps[6] = {1,3,3,3,3,3};
     int active_leg = 0;
     int tripod_steps[6] = {1,3,1,3,1,3};
     bool IK = false;
 
-    int t = 0;
-    double timespan = 4.0;
+    double timespan = 0.8;
     double tick =0.0;
     double rotation_speed= 2.0;
     double translation_speed=1.0;
