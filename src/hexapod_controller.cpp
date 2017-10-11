@@ -111,7 +111,7 @@ void Hexapod_controller::walk_forward(Gait gait, double dt){
                 if(forward)
                     body->translate( GMlib::Vector<float,3>(0.0f,-translation_speed*tick/100 , 0.0f));
                 else
-                    body->translate( GMlib::Vector<float,3>(0.0f,-translation_speed*tick/100, 0.0f));
+                    body->translate( GMlib::Vector<float,3>(0.0f,translation_speed*tick/100, 0.0f));
 
             }
         }
@@ -203,13 +203,13 @@ void Hexapod_controller::run(double dt){
 
 void Hexapod_controller::localSimulate(double dt) {
 
-//    if(!IK){
-//        run_inverse_kinematicts(*tripod.get());
-//        std::cout<<"Inverse Kinematics is run !"<<std::endl;
-//        IK = true;
-//    }
+    if(!IK){
+        run_inverse_kinematicts(*tripod.get());
+        std::cout<<"Inverse Kinematics is run !"<<std::endl;
+        IK = true;
+    }
 
-//    run(dt);
+    walk_backward(*tripod.get(),dt);
 
 
 }

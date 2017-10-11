@@ -23,8 +23,6 @@ public:
     void moveForward(double dt);
 
     IKAngles inverseKinematics(GMlib::Point<float,3> oldPos, GMlib::Point<float,3> newPos);
-    GMlib::PSphere<float>* base;
-
     //For debugging
     int time =0;
     double t=0;

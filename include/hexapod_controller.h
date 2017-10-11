@@ -19,6 +19,7 @@ public:
     void turn_right();
     void turn_left();
     void addHexapod(std::shared_ptr<Hexapod> hexapod);
+    void move_from_A_to_B();
 
 
 protected:
@@ -26,11 +27,16 @@ protected:
     void walk_backward(Gait gait=Tripod, double dt =0.016);
     void run(double dt =0.016);
     void rotate_in_place();
-    void go_from_A_to_B();
 
 private:
+
+    void localSimulate(double dt) override;
+    void run_inverse_kinematicts(Gait gait);
+    void update_target_positions(Gait gait, int i, int j);
+    void update_angles(int i, int j);
+
+
     std::shared_ptr<Gait> tripod;
-    int step_in_cycle =1;
     std::shared_ptr<Gait> wave;
     std::shared_ptr<Hexapod> hexapod;
     std::shared_ptr<GMlib::PCylinder<float>> body;
@@ -38,10 +44,7 @@ private:
     std::vector<GMlib::Point<float,3>> target_positions;
     GMlib::APoint<float,3> tip_position; // IK variable
     std::vector<std::vector<IKAngles>> angles;  //leg/step (3 angles)
-    void localSimulate(double dt) override;
-    void update_target_positions(Gait gait, int i, int j);
-    void update_angles(int i, int j);
-    unsigned int time=0;
+
 
     int wave_steps[6] = {1,3,3,3,3,3};
     int active_leg = 0;
@@ -53,7 +56,7 @@ private:
     double rotation_speed= 2.0;
     double translation_speed=1.0;
 
-    void run_inverse_kinematicts(Gait gait);
+
     bool forward = true;
 
 };

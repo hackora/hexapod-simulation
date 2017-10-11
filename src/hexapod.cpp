@@ -78,7 +78,6 @@ void Hexapod::insert(GMlib::Scene &scene){
     link();
     scene.insert(body.get());
 
-//    scene.insert(body.get());
 //    for(unsigned int i=0;i<legs.size();i++){
 //        legs[i]->insert(scene);
 //    }
