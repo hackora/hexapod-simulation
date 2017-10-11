@@ -79,29 +79,32 @@ include_directories( ${GMlib_INCLUDE_DIRS} )
 link_directories( ${GMlib_LINK_DIRS} )
 add_definitions(${GMlib_DEFINITIONS})
 
-include_directories( ${GLEW_INCLUDE_DIRS} )
+message( "HEXAPOD_INCLUDE_DIR: ${HEXAPOD_INCLUDE_DIR}" )
+include_directories( ${HEXAPOD_INCLUDE_DIR} )
+
+include_directories( ${GLEW_INCLUDE_DIRS})
 if(WIN32)
   add_definitions(-DGLEW_STATIC)
 endif(WIN32)
 
-message("COLLISION_INTERFACE_INCLUDE_DIR: ${COLLISION_INTERFACE_INCLUDE_DIR}")
-if(NOT COLLISION_INTERFACE_INCLUDE_DIR)
-  message( FATAL_ERROR "COLLISION_INTERFACE_INCLUDE_DIR not set")
-endif()
+#message("COLLISION_INTERFACE_INCLUDE_DIR: ${COLLISION_INTERFACE_INCLUDE_DIR}")
+#if(NOT COLLISION_INTERFACE_INCLUDE_DIR)
+#  message( FATAL_ERROR "COLLISION_INTERFACE_INCLUDE_DIR not set")
+#endif()
 
 
-include_directories(${COLLISION_INTERFACE_INCLUDE_DIR})
+#include_directories(${COLLISION_INTERFACE_INCLUDE_DIR})
 
-message("COLLISION_LIBRARY_INCLUDE_DIR: ${COLLISION_LIBRARY_INCLUDE_DIR}")
-if(NOT COLLISION_LIBRARY_INCLUDE_DIR)
-  message( FATAL_ERROR "COLLISION_LIBRARY_INCLUDE_DIR not set")
-endif()
+#message("COLLISION_LIBRARY_INCLUDE_DIR: ${COLLISION_LIBRARY_INCLUDE_DIR}")
+#if(NOT COLLISION_LIBRARY_INCLUDE_DIR)
+#  message( FATAL_ERROR "COLLISION_LIBRARY_INCLUDE_DIR not set")
+#endif()
 
 
-include_directories(${COLLISION_LIBRARY_INCLUDE_DIR})
+#include_directories(${COLLISION_LIBRARY_INCLUDE_DIR})
 
-link_directories(${COLLISION_LIBRARY_DIR})
-link_directories(${COLLISION_LIBRARY_INCLUDE_DIR})
+#link_directories(${COLLISION_LIBRARY_DIR})
+#link_directories(${COLLISION_LIBRARY_INCLUDE_DIR})
 
 
 
@@ -125,15 +128,14 @@ set( HDRS
   application/window.h
   application/utils.h
 
-  scenario.h
-  testtorus.h
-  cube.h
-  tibia.h
-  hexapod.h
-  leg.h
-  simulator.h
-  hexapod_controller.h
-  gait.h
+  include/scenario.h
+  include/cube.h
+  include/tibia.h
+  include/hexapod.h
+  include/leg.h
+  include/simulator.h
+  include/hexapod_controller.h
+  include/gait.h
   )
 
 set( SRCS
@@ -154,14 +156,14 @@ set( SRCS
 
   application/main.cpp
 
-  scenario.cpp
-  cube.cpp
-  tibia.cpp
-  hexapod.cpp
-  leg.cpp
-  simulator.cpp
-  hexapod_controller.cpp
-  gait.cpp
+  src/scenario.cpp
+  src/cube.cpp
+  src/tibia.cpp
+  src/hexapod.cpp
+  src/leg.cpp
+  src/simulator.cpp
+  src/hexapod_controller.cpp
+  src/gait.cpp
   )
 
 #########
@@ -178,7 +180,7 @@ QT5_WRAP_CPP( HDRS_MOC
   application/guiapplication.h
   application/window.h
 
-  scenario.h
+  include/scenario.h
   )
 
 set( RCCS

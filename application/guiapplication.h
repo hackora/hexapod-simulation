@@ -4,7 +4,7 @@
 
 #include "gmlibwrapper.h"
 #include "window.h"
-#include "../scenario.h"
+#include "../include/scenario.h"
 #include "../hidmanager/defaulthidmanager.h"
 
 class GLContextSurfaceWrapper;
