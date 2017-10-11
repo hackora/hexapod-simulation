@@ -42,16 +42,18 @@ private:
     void update_target_positions(Gait gait, int i, int j);
     void update_angles(int i, int j);
     unsigned int time=0;
+
+    int wave_steps[6] = {1,3,3,3,3,3};
+    int active_leg = 0;
     int tripod_steps[6] = {1,3,1,3,1,3};
     bool IK = false;
 
-    double timespan = 0.2;
+    double timespan = 0.8;
     double tick =0.0;
     double rotation_speed= 2.0;
     double translation_speed=1.0;
 
-    void run_inverse_kinematicts();
-
+    void run_inverse_kinematicts(Gait gait);
 
 };
 

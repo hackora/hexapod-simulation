@@ -16,14 +16,9 @@ void Simulator::setupSimulator(){
     double dt = 0.1;
     _scene.enabledFixedDt();
     _scene.setFixedDt(dt);
-    insertto(hexapod);
+    insert_to_scene(hexapod);
     _hex_controller.addHexapod(hexapod);
     _scene.insert(&_hex_controller);
-
-
-
-
-
 }
 
 void Simulator::setupGame(){
