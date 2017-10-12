@@ -30,9 +30,10 @@ public:
   ~GuiApplication();
 
 private:
-  Window                                      _window;
-  Scenario                                    _scenario;
+  Window                                                  _window;
+  Scenario                                                 _scenario;
   DefaultHidManager                           _hidmanager;
+  QImage                                                  _img;
 
 private slots:
   virtual void                                onSceneGraphInitialized();

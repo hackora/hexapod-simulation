@@ -1,5 +1,8 @@
 #include "simulator.h"
 #include "hexapod.h"
+#include "QDir"
+#include <QQmlContext>
+#include <QGuiApplication>
 
 Simulator::Simulator(GMlib::Scene& scene) : _scene{scene}{
     _hexapod = std::make_shared< Hexapod>();
@@ -14,26 +17,6 @@ Simulator::Simulator(GMlib::Scene& scene) : _scene{scene}{
 
     _surface_visualizer = new GMlib::PSurfTexVisualizer<float,3>;
     _material = GMlib::GMmaterial::plastic();
-
-
-    // Load Image
-    QString path("/home/ghada/Documents/Hexapod/Hexapod-simulation/application/textures/texture.bmp");
-    QImage  img(path );
-    img = img.convertToFormat(QImage::Format_RGB888);
-
-
-
-    _ground->setMaterial( _material );
-
-    _texture.create(GL_TEXTURE_2D);
-    _texture.bind();
-    _texture.texParameteri(GL_TEXTURE_WRAP_S, GL_REPEAT);
-    _texture.texParameteri(GL_TEXTURE_WRAP_T, GL_REPEAT);
-    _texture.texParameteri(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    _texture.texParameteri( GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    _texture.texImage2D(0, GL_RGB,  img.width(), img.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, img.bits());
-    _surface_visualizer->setTexture(_texture);
-    _texture.unbind();
 
 }
 
@@ -57,6 +40,23 @@ void Simulator::setupSimulator(){
 void Simulator::insert_to_scene(std::shared_ptr<Hexapod> hexapod){
 
     hexapod->insert(_scene);
+}
+
+void Simulator::set_texture(QImage img){
+
+    img = img.convertToFormat(QImage::Format_RGB888);
+    _ground->setMaterial( _material );
+
+    _texture.create(GL_TEXTURE_2D);
+    _texture.bind();
+    _texture.texParameteri(GL_TEXTURE_WRAP_S, GL_REPEAT);
+    _texture.texParameteri(GL_TEXTURE_WRAP_T, GL_REPEAT);
+    _texture.texParameteri(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    _texture.texParameteri( GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    _texture.texImage2D(0, GL_RGB,  img.width(), img.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, img.bits());
+    _surface_visualizer->setTexture(_texture);
+    _texture.unbind();
+
 }
 
 

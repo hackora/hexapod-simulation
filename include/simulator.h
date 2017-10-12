@@ -11,6 +11,7 @@ class Simulator{
 public:
     explicit Simulator ( GMlib::Scene& scene);
 
+    void set_texture(QImage img);
     void setupSimulator();
     void insert_to_scene(std::shared_ptr<Hexapod> hexapod);
 

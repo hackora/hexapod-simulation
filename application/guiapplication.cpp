@@ -72,7 +72,11 @@ GuiApplication::onSceneGraphInitialized() {
   connect( &_scenario,  &GMlibWrapper::signFrameReady,
            &_window,    &Window::update );
 
+  QString path(":/texture.bmp");
+  QImage  _img(path );
+
   // Init test scene of the GMlib wrapper
+  _scenario.setTexture(_img);
   _scenario.initializeScenario();
   _scenario.prepare();
 

@@ -61,11 +61,17 @@ void Scenario::initializeScenario() {
   scene()->insertCamera( top_rcpair.camera.get() );
   top_rcpair.renderer->reshape( GMlib::Vector<int,2>(init_viewport_size, init_viewport_size) );
 
+
   _simulator = std::make_shared<Simulator>(*scene());
+  _simulator->set_texture(_img);
   _simulator->setupSimulator();
 
 }
 
 void Scenario::cleanupScenario() {
     _simulator.reset();
+}
+
+void Scenario::setTexture(QImage img){
+    _img = img;
 }
