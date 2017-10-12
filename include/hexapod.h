@@ -18,36 +18,22 @@ public:
     void replot(int m1=20, int m2=20, int d1=1, int d2=1);
     void toggleDefaultVisualizer();
     void insert(GMlib::Scene &scene);
+    void moveForward(double dt);
     std::shared_ptr<GMlib::PCylinder<float>> getBody(){return body;}
     std::vector<std::shared_ptr<Leg>> getLegs(){return legs;}
-    void moveForward(double dt);
-
-    IKAngles inverseKinematics(GMlib::Point<float,3> oldPos, GMlib::Point<float,3> newPos);
-    //For debugging
-    int time =0;
-    double t=0;
-    bool cycle=false;
-
 
 protected:
     std::shared_ptr<GMlib::PCylinder<float>> body;
     std::vector<std::shared_ptr<Leg>> legs;    // 6
 
-    GMlib::PCylinder<float>* shape1;
-    GMlib::PCylinder<float>*shape2;
-    GMlib::PCone<float>* shape3;
-    GMlib::PSphere<float>* joint0;
-    GMlib::PSphere<float>* joint1;
-    GMlib::PSphere<float>* joint2;
-
-    void localSimulate (double dt) override;
-
 private:
+    void localSimulate (double dt) override;
     void makeBody(GMlib::Point<float, 3> pos);
     void makeLegs(GMlib::Point<float, 3> pos);
-
     void adjustPositions();
     void link();
+
+
 };
 
 

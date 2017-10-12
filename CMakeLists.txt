@@ -87,27 +87,6 @@ if(WIN32)
   add_definitions(-DGLEW_STATIC)
 endif(WIN32)
 
-#message("COLLISION_INTERFACE_INCLUDE_DIR: ${COLLISION_INTERFACE_INCLUDE_DIR}")
-#if(NOT COLLISION_INTERFACE_INCLUDE_DIR)
-#  message( FATAL_ERROR "COLLISION_INTERFACE_INCLUDE_DIR not set")
-#endif()
-
-
-#include_directories(${COLLISION_INTERFACE_INCLUDE_DIR})
-
-#message("COLLISION_LIBRARY_INCLUDE_DIR: ${COLLISION_LIBRARY_INCLUDE_DIR}")
-#if(NOT COLLISION_LIBRARY_INCLUDE_DIR)
-#  message( FATAL_ERROR "COLLISION_LIBRARY_INCLUDE_DIR not set")
-#endif()
-
-
-#include_directories(${COLLISION_LIBRARY_INCLUDE_DIR})
-
-#link_directories(${COLLISION_LIBRARY_DIR})
-#link_directories(${COLLISION_LIBRARY_INCLUDE_DIR})
-
-
-
 #######
 # Files
 
@@ -127,6 +106,7 @@ set( HDRS
   application/guiapplication.h
   application/window.h
   application/utils.h
+  application/textures/texture.bmp
 
   include/scenario.h
   include/cube.h
@@ -179,6 +159,7 @@ QT5_WRAP_CPP( HDRS_MOC
   application/gmlibwrapper.h
   application/guiapplication.h
   application/window.h
+  application/textures/texture.bmp
 
   include/scenario.h
   )

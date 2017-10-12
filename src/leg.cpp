@@ -1,84 +1,18 @@
 #include "leg.h"
 
-
-
-Leg::Leg(GMlib::Point<float, 3> pos, bool orientation)
-{
-
+Leg::Leg(GMlib::Point<float, 3> pos, bool orientation){
 
     makeJoints();
     makeCoxa();
     makeFemur();
     makeTibia();
 
-    //tip
+    tip= std::make_shared< GMlib::PSphere<float>>(0.1); //end effector
+    leg_base= std::make_shared< GMlib::PSphere<float>>(0.2); //base frame (fixed orientation)
 
-    tip= std::make_shared< GMlib::PSphere<float>>(0.1);
-    tip->toggleDefaultVisualizer();
-    tip->setMaterial(GMlib::GMmaterial::polishedGreen());
-    tip->replot(10  ,10,1,1);
-
-    //base frame
-
-     leg_base= std::make_shared< GMlib::PSphere<float>>(0.2);
-     leg_base->toggleDefaultVisualizer();
-     leg_base->setMaterial(GMlib::GMmaterial::blackRubber());
-     leg_base->replot(10  ,10,1,1);
-
-//     auto x = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.8,0.0,0.0));
-//     x->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-//     x->toggleDefaultVisualizer();
-//     x->replot(10,1);
-//     x->setColor(GMlib::GMcolor::red());
-//     leg_base->insert(x);
-
-//     auto y = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.8,0.0));
-//     y->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-//     y->toggleDefaultVisualizer();
-//     y->replot(10,1);
-//     y->setColor(GMlib::GMcolor::green());
-//     leg_base->insert(y);
-
-//     auto z = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.0,0.8));
-//     z->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-//     z->toggleDefaultVisualizer();
-//     z->replot(10,1);
-//     z->setColor(GMlib::GMcolor::blue());
-//     leg_base->insert(z);
-
-
-    right = orientation;
+    right = orientation; //left or right leg
     adjustPositions();
     link();
-//    auto joint0= joints[0]->getPos();
-//    this->translate(GMlib::Vector<float,3>(joint0(0),joint0(1),joint0(2)));
-
-//    update_tip_position();
-
-//    for(unsigned int i = 0; i<3;i++){
-
-//        auto x = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.8,0.0,0.0));
-//        x->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-//        x->toggleDefaultVisualizer();
-//        x->replot(10,1);
-//        x->setColor(GMlib::GMcolor::red());
-//        joints[i]->insert(x);
-
-//        auto y = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.8,0.0));
-//        y->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-//        y->toggleDefaultVisualizer();
-//        y->replot(10,1);
-//        y->setColor(GMlib::GMcolor::green());
-//         joints[i]->insert(y);
-
-//        auto z = new GMlib::PLine<float>(GMlib::Point<float, 3> (0.0,0.0,0.0),GMlib::Point<float, 3> (0.0,0.0,0.8));
-//        z->translate(GMlib::Vector<float,3>(0.0,0.0,0.0));
-//        z->toggleDefaultVisualizer();
-//        z->replot(10,1);
-//        z->setColor(GMlib::GMcolor::blue());
-//         joints[i]->insert(z);
-//    }
-
 }
 
 void Leg::setMaterial(const GMlib::Material &cm, const GMlib::Material &fm, const GMlib::Material &tm, const GMlib::Material &jm)
@@ -89,6 +23,8 @@ void Leg::setMaterial(const GMlib::Material &cm, const GMlib::Material &fm, cons
     coxa->setMaterial(cm);
     femur->setMaterial(fm);
     tibia->setMaterial(tm);
+    tip->setMaterial(GMlib::GMmaterial::sapphire());
+    leg_base->setMaterial(GMlib::GMmaterial::blackRubber());
 
 }
 
@@ -104,6 +40,8 @@ void Leg::replot(int m1, int m2, int d1, int d2)
     coxa->replot(m1,m2,d1,d2);
     femur->replot(m1,m2,d1,d2);
     tibia->replot(20,100,1,1);
+    leg_base->replot(10  ,10,1,1);
+    tip->replot(10  ,10,1,1);
 
 }
 
@@ -117,11 +55,11 @@ void Leg::toggleDefaultVisualizer()
     coxa->toggleDefaultVisualizer();
     femur->toggleDefaultVisualizer();
     tibia->toggleDefaultVisualizer();
+    leg_base->toggleDefaultVisualizer();
+    tip->toggleDefaultVisualizer();
 
 
 }
-
-
 
 void Leg::makeCoxa()
 {
@@ -146,19 +84,45 @@ void Leg::makeJoints()
     }
 }
 
-void Leg::adjustPositions()
-{
+void Leg::adjustPositions(){
 
-        // Joint between Body and Coxas
-        joints[0]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 1.0f ) );
-        tip->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 1.0f ) );
+    // Joint between Body and Coxas
+    joints[0]->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 1.0f ) );
+    tip->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 1.0f ) );
 
-        if(right){
-            leg_base->translate(GMlib::Vector<float,3>(0.0f,0.0f,1.0f));
+    if(right){
+        leg_base->translate(GMlib::Vector<float,3>(0.0f,0.0f,1.0f));
+        joints[0]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ) );
+        joints[0]->rotate( GMlib::Angle(180), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f ) );
+        leg_base->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ) );
+        leg_base->rotate( GMlib::Angle(180), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f ) );
+        coxa->rotate(GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ));
+        joints[1]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>( 1.0f, 0.0f,0.0f ) );
+        joints[1]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>( 0.0f, 0.0f,1.0f ) );
+        joints[2]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>( 0.0f, 1.0f,0.0f ) );
+
+        // Joint between Coxas and Femur
+        joints[1]->translate( GMlib::Vector<float,3>(0.5f, 0.0f, 0.0f ) );
+        femur->rotate( GMlib::Angle(-90), GMlib::Vector<float,3>( 0.0f, 1.0f,0.0f ) );
+        tibia->rotate( GMlib::Angle(90), GMlib::Vector<float,3>( 0.0f, 1.0f,0.0f ) );
+
+        // Joint between Femur and Tibia
+        joints[2]->translate( GMlib::Vector<float,3>(0.8f, 0.0f, 0.0f ) );
+
+        // Rotate Tibia joint - pointing down
+        joints[2]->rotate( GMlib::Angle(-90), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f ) );
+
+        coxa->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 0.5f ) );
+        femur->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -0.8f ));
+        tibia->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 1.0f ));
+    }
+
+        if(!right) {
+            leg_base->translate(GMlib::Vector<float,3>(0.0f,0.0f,-1.0f));
+
             joints[0]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ) );
-            joints[0]->rotate( GMlib::Angle(180), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f ) );         
             leg_base->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ) );
-            leg_base->rotate( GMlib::Angle(180), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f ) );
+            joints[0]->translate( GMlib::Vector<float,3>( 2.0f, 0.0f, 0.0f ) );
             coxa->rotate(GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ));
             joints[1]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>( 1.0f, 0.0f,0.0f ) );
             joints[1]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>( 0.0f, 0.0f,1.0f ) );
@@ -179,33 +143,6 @@ void Leg::adjustPositions()
             femur->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -0.8f ));
             tibia->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 1.0f ));
         }
-
-            if(!right) {
-                leg_base->translate(GMlib::Vector<float,3>(0.0f,0.0f,-1.0f));
-
-                joints[0]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ) );
-                leg_base->rotate( GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ) );
-                joints[0]->translate( GMlib::Vector<float,3>( 2.0f, 0.0f, 0.0f ) );
-                coxa->rotate(GMlib::Angle(90), GMlib::Vector<float,3>(0.0f, 1.0f, 0.0f ));
-                joints[1]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>( 1.0f, 0.0f,0.0f ) );
-                joints[1]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>( 0.0f, 0.0f,1.0f ) );
-                joints[2]->rotate( GMlib::Angle(90), GMlib::Vector<float,3>( 0.0f, 1.0f,0.0f ) );
-
-                // Joint between Coxas and Femur
-                joints[1]->translate( GMlib::Vector<float,3>(0.5f, 0.0f, 0.0f ) );
-                femur->rotate( GMlib::Angle(-90), GMlib::Vector<float,3>( 0.0f, 1.0f,0.0f ) );
-                tibia->rotate( GMlib::Angle(90), GMlib::Vector<float,3>( 0.0f, 1.0f,0.0f ) );
-
-                // Joint between Femur and Tibia
-                joints[2]->translate( GMlib::Vector<float,3>(0.8f, 0.0f, 0.0f ) );
-
-                // Rotate Tibia joint - pointing down
-                joints[2]->rotate( GMlib::Angle(-90), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f ) );
-
-                coxa->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 0.5f ) );
-                femur->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, -0.8f ));
-                tibia->translate( GMlib::Vector<float,3>( 0.0f, 0.0f, 1.0f ));
-            }
 }
 
 void Leg::link()
@@ -226,12 +163,6 @@ void Leg::link()
     }
     tibia->insert(tip.get());
 }
-
-// Don't need old position, but can be useful to keep for checking distance, too big distance is bad.
-// But if dt is small enough, the movements are small enough that they might be fine
-// Need to validate the angles, to make sure they are valid
-// Add newDirection vector, as the direction of the leg needs to be valid
-// Børre suggest generalizing the names of alpha, beta, gamma
 
 IKAngles Leg::inverseKinematics(GMlib::Point<float, 3> targetPosition){
 

@@ -30,16 +30,16 @@ class Leg: public  GMlib::SceneObject {
 
         IKAngles inverseKinematics(GMlib::Point<float,3> targetPosition);
         void update_tip_position();
-        GMlib::APoint<float,4> get_tip_pos(){update_tip_position();return tip_base_pos;}
+        GMlib::APoint<float,4> get_tip_pos(){ update_tip_position(); return tip_base_pos;}
         std::shared_ptr<GMlib::PSphere<float>> leg_base;
         std::shared_ptr<GMlib::PSphere<float>> tip;
+        bool isRight(){return right;}
 
 
         std::vector<std::shared_ptr<GMlib::PSphere<float>>> getJoints();
         std::shared_ptr<GMlib::PCylinder<float>> getCoxa();
         std::shared_ptr<GMlib::PCylinder<float>> getFemur();
         std::shared_ptr<Tibia> getTibia();
-        bool isRight(){return right;}
 
 
     protected:

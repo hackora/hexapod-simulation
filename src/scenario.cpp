@@ -1,12 +1,10 @@
 #include "scenario.h"
 #include "simulator.h"
-#include "hexapod.h"
 
 //// hidmanager
 //#include "hidmanager/defaulthidmanager.h"
 
 // gmlib
-#include <gmOpenglModule>
 #include <gmSceneModule>
 #include <gmParametricsModule>
 

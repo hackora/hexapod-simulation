@@ -2,11 +2,11 @@
 #define HEXAPOD_CONTROLLER_H
 
 #include<gmParametricsModule>
-#include<memory>
 
 #include "gait.h"
 #include "hexapod.h"
 #include <vector>
+#include<memory>
 
 
 class Hexapod_controller: public GMlib::SceneObject {
