@@ -8,6 +8,6 @@ This project is a simulation of a walking Hexapod that uses inverse kinematics a
 
 ### To build the Hexappod project:
 
-Set GMLIB_DIR to your local path of the 0.6.9 build of GMlib library
+Set GMLIB_DIR to your local path of the 0.6.9 build of GMlib library: https://source.uit.no/gmlib/gmlib
 
 Set HEXAPOD_INCLUDE_DIR to your local path of the include folder of this project
