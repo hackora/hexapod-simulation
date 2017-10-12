@@ -36,7 +36,7 @@ void Scenario::initializeScenario() {
   proj_rcpair.camera->set(init_cam_pos,init_cam_dir,init_cam_up);
   proj_rcpair.camera->setCuttingPlanes( 1.0f, 8000.0f );
   proj_rcpair.camera->rotateGlobal( GMlib::Angle(-45), GMlib::Vector<float,3>( 1.0f, 0.0f, 0.0f ) );
-  proj_rcpair.camera->translateGlobal( GMlib::Vector<float,3>( 0.0f, -20.0f, 20.0f ) );
+  proj_rcpair.camera->translateGlobal( GMlib::Vector<float,3>( 0.0f, -50.0f, 50.0f ) );
   scene()->insertCamera( proj_rcpair.camera.get() );
   proj_rcpair.renderer->reshape( GMlib::Vector<int,2>(init_viewport_size, init_viewport_size) );
 
