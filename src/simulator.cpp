@@ -7,10 +7,10 @@ Simulator::Simulator(GMlib::Scene& scene) : _scene{scene}{
                                          GMlib::GMmaterial::ruby(),GMlib::GMmaterial::brass(),GMlib::GMmaterial::silver());
 
     _ground = std::make_shared<GMlib::PPlane<float>>(
-                                                     GMlib::Vector<float,3>(0.0f, 1000.0f, -2.2f),
-                                                     GMlib::Vector<float,3>(0.0f, -1000, 0.0f),
-                                                     GMlib::Vector<float,3>(-1000.0, 0.0f, 0.0f));
-    _ground->translate(GMlib::Point<float,3>(500.0f,-100.0f,0.0f));
+                                                     GMlib::Vector<float,3>(0.0f, 500.0f, -2.2f),
+                                                     GMlib::Vector<float,3>(0.0f, -500, 0.0f),
+                                                     GMlib::Vector<float,3>(-500.0, 0.0f, 0.0f));
+    _ground->translate(GMlib::Point<float,3>(250.0f,-100.0f,0.0f));
 
     _surface_visualizer = new GMlib::PSurfTexVisualizer<float,3>;
     _material = GMlib::GMmaterial::plastic();

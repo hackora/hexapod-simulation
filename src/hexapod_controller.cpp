@@ -208,8 +208,11 @@ void Hexapod_controller::localSimulate(double dt) {
         std::cout<<"Inverse Kinematics is run !"<<std::endl;
         IK = true;
     }
+
     walk_forward(*tripod.get(),dt);
+
 //    walk_backward(*tripod.get(),dt);
+
 //    run(dt);
 
 
