@@ -122,7 +122,7 @@ void Hexapod_controller::walk_forward(Gait gait, double dt){
             auto femurAngle = angles[i][wave_steps[i]-1].femurAngle;
             auto tibiaAngle = angles[i][wave_steps[i]-1].tibiaAngle;
 
-            if(i !=0  && i !=5  && i!=4){
+            if(i !=0  && i !=5  ){
                 legs[i]->getJoints()[0]->rotate((coxaAngle +angle1)*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
                 legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 )*var, GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
                 legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3)*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
