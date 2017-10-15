@@ -61,4 +61,10 @@ void Simulator::set_texture(QImage img){
 
 }
 
+void Simulator::deleteHexapod() {
+
+//    _hex_controller.remove(_hexapod.get());
+//    _hexapod.reset();
+}
+
 

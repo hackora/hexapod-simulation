@@ -13,6 +13,7 @@ Hexapod_controller::Hexapod_controller(){
         }
         angles.push_back(temp_angles);
     }
+
 }
 
 void Hexapod_controller::addHexapod(std::shared_ptr<Hexapod> hexapod){
@@ -158,6 +159,7 @@ void Hexapod_controller::walk_forward(Gait gait, double dt){
                 tripod_steps[0]=1;
                 tripod_steps[2]=1;
                 tripod_steps[4]=1;
+                walking = false;
             }
             if(tripod_steps[3]<4){
                 tripod_steps[1]++;
@@ -209,12 +211,7 @@ void Hexapod_controller::localSimulate(double dt) {
         IK = true;
     }
 
-    walk_forward(*tripod.get(),dt);
-
-//    walk_backward(*tripod.get(),dt);
-
-//    run(dt);
-
+    if(walking) walk_forward(*tripod.get(),dt);
 
 }
 
@@ -240,6 +237,50 @@ void Hexapod_controller::run_inverse_kinematicts(Gait gait){
 
 void Hexapod_controller::return_to_start() {
 
-    std::cout<<"Returning the Hexapod to the starting position !"<<std::endl;
+    if(!reset) {
 
+        std::cout<<"Returning the Hexapod to the starting position !"<<std::endl;
+        walking = false;
+
+        // Reset position
+        auto pos = GMlib::Point<float,3>(0.0f, 0.0f, 0.0f);
+        auto dir = GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f);
+        auto up = GMlib::Vector<float,3>(1.0f, 0.0f, 0.0f);
+
+        body->set(pos, dir, up);
+
+        // Legs
+        for( unsigned int i = 0; i < legs.size(); i++) {
+
+
+            GMlib::Angle angle1= (legs[i]->getJoints()[0]->getGlobalDir())
+                    .getAngle(legs[i]->leg_base->getGlobalDir());
+            GMlib::Angle angle2= (legs[i]->getJoints()[1]->getGlobalDir())
+                    .getAngle(legs[i]->getJoints()[0]->getGlobalDir());
+            GMlib::Angle angle3=  (legs[i]->getJoints()[2]->getGlobalDir())
+                    .getAngle(legs[i]->getJoints()[1]->getGlobalDir());
+
+            GMlib::Angle coxaAngle_degrees = 45;
+            GMlib::Angle coxaAngle_radians = coxaAngle_degrees.getRad();
+            if( i == 1 || i == 4) coxaAngle_radians =  0.0;
+
+            GMlib::Angle femurAngle = 0.0;
+
+            GMlib::Angle tibiaAngle_degrees = -90;
+            GMlib::Angle tibiaAngle_radians = tibiaAngle_degrees.getRad();
+
+            if( (i !=0  && i !=2 && legs[i]->isRight()) || (i !=3  && i !=5 && !legs[i]->isRight()) ) {
+                legs[i]->getJoints()[0]->rotate((coxaAngle_radians +angle1),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                legs[i]->getJoints()[2]->rotate((tibiaAngle_radians+angle3),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            }
+            else{
+                legs[i]->getJoints()[0]->rotate((coxaAngle_radians -angle1),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 ), GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                legs[i]->getJoints()[2]->rotate(((tibiaAngle_radians+angle3)),GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            }
+
+            reset = true;
+        }
+    }
 }

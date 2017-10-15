@@ -19,9 +19,12 @@ public:
   void    initializeScenario() override;
   void    cleanupScenario() override;
 
+  void      deleteHexapod();
+
 private:
   std::shared_ptr<Simulator> _simulator;
   QImage                                        _img;
+
 
 };
 

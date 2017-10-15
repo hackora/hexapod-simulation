@@ -75,3 +75,8 @@ void Scenario::cleanupScenario() {
 void Scenario::setTexture(QImage img){
     _img = img;
 }
+
+void Scenario::deleteHexapod() {
+
+    _simulator->deleteHexapod();
+}
