@@ -79,6 +79,8 @@ void Hexapod_controller::walk_backward(Gait gait,double dt){
 
 void Hexapod_controller::walk_forward(Gait gait, double dt){
 
+    reset = false;
+
     auto var = tick/timespan;
 
     for(unsigned int i =0;i<6;i++){
@@ -199,7 +201,6 @@ void Hexapod_controller::walk_forward(Gait gait, double dt){
 
 void Hexapod_controller::run(double dt){
     timespan = 0.08;  //dt*5
-    forward = true;
     walk_forward(*tripod.get(),dt);
 }
 
@@ -211,7 +212,8 @@ void Hexapod_controller::localSimulate(double dt) {
         IK = true;
     }
 
-    if(walking) walk_forward(*tripod.get(),dt);
+//    if(walking) walk_forward(*tripod.get(),dt);
+    if(walking) run(dt);
 
 }
 
