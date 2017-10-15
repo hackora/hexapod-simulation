@@ -400,6 +400,15 @@ void DefaultHidManager::heHexapodWalkForward() {
 
     if(_hexapod_selected) {
         _hexapod->walking = true;
+        _hexapod->forward = true;
+    }
+}
+
+void DefaultHidManager::heHexapodWalkBackward() {
+
+    if(_hexapod_selected) {
+        _hexapod->walking = true;
+        _hexapod->forward = false;
     }
 }
 
@@ -675,6 +684,13 @@ void DefaultHidManager::setupDefaultHidBindings() {
                              this, SLOT(heHexapodWalkForward()),
                              OGL_TRIGGER);
 
+  QString ha_hexapod_walk_backward =
+          registerHidAction( "Object interaction",
+                             "Walk Hexapod backward one cycle",
+                             "Walk Hexapod backward one step",
+                             this, SLOT(heHexapodWalkBackward()),
+                             OGL_TRIGGER);
+
 
 
   // Rendering
@@ -722,6 +738,7 @@ void DefaultHidManager::setupDefaultHidBindings() {
   registerHidMapping( ha_id_select_hexapod,               new KeyPressInput( Qt::Key_H ) );
   registerHidMapping( ha_id_return_to_start_hexapod,      new KeyPressInput( Qt::Key_Space ) );
   registerHidMapping( ha_id_hexapod_walk_forward,         new KeyPressInput( Qt::Key_W ) );
+  registerHidMapping( ha_hexapod_walk_backward,           new KeyPressInput( Qt::Key_S ) );
 
   registerHidMapping( ha_id_objsel_select,                new MousePressInput( Qt::RightButton ) );
   registerHidMapping( ha_id_view_lock_to,                 new MousePressInput( Qt::RightButton, Qt::ControlModifier ) );
