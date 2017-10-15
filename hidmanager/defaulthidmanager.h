@@ -67,6 +67,10 @@ private slots:
   virtual void                      heReturnHexapodToStart();
   virtual void                      heHexapodWalkForward();
   virtual void                      heHexapodWalkBackward();
+  virtual void                      heHexapodRunForward();
+  virtual void                      heHexapodRunBackward();
+  virtual void                      heHexapodGaitTripod();
+  virtual void                      heHexapodGaitWave();
 
 private:
   GMlib::Camera*                    findCamera( const QString& view_name ) const;
