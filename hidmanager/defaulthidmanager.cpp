@@ -396,6 +396,13 @@ void DefaultHidManager::heReturnHexapodToStart() {
     }
 }
 
+void DefaultHidManager::heHexapodWalkForward() {
+
+    if(_hexapod_selected) {
+        _hexapod->walking = true;
+    }
+}
+
 void DefaultHidManager::heSelectObject(const HidInputEvent::HidInputParams& params) {
 
   auto view_name = viewNameFromParams(params);
@@ -661,6 +668,13 @@ void DefaultHidManager::setupDefaultHidBindings() {
                              this, SLOT(heReturnHexapodToStart()),
                              OGL_TRIGGER);
 
+  QString ha_id_hexapod_walk_forward =
+          registerHidAction( "Object interaction",
+                             "Walk Hexapod forward one cycle",
+                             "Walk Hexapod forward one step",
+                             this, SLOT(heHexapodWalkForward()),
+                             OGL_TRIGGER);
+
 
 
   // Rendering
@@ -707,6 +721,7 @@ void DefaultHidManager::setupDefaultHidBindings() {
   // Bjørn's changes
   registerHidMapping( ha_id_select_hexapod,               new KeyPressInput( Qt::Key_H ) );
   registerHidMapping( ha_id_return_to_start_hexapod,      new KeyPressInput( Qt::Key_Space ) );
+  registerHidMapping( ha_id_hexapod_walk_forward,         new KeyPressInput( Qt::Key_W ) );
 
   registerHidMapping( ha_id_objsel_select,                new MousePressInput( Qt::RightButton ) );
   registerHidMapping( ha_id_view_lock_to,                 new MousePressInput( Qt::RightButton, Qt::ControlModifier ) );

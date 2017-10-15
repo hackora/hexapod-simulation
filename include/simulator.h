@@ -15,6 +15,8 @@ public:
     void setupSimulator();
     void insert_to_scene(std::shared_ptr<Hexapod> hexapod);
 
+    void deleteHexapod();
+
 private:
     GMlib::Scene&                                       _scene;
     Hexapod_controller                                  _hex_controller;
@@ -23,6 +25,8 @@ private:
     GMlib::GL::Texture                                  _texture;
     GMlib::Material                                     _material;
     GMlib::PSurfTexVisualizer<float,3>*                 _surface_visualizer ;
+
+
 
 };
 

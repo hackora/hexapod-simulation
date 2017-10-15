@@ -23,6 +23,11 @@ public:
 
     void return_to_start();
 
+    bool walking = false;
+    bool forward = true;
+
+
+
 
 protected:
     void walk_forward(Gait gait, double dt);
@@ -58,8 +63,7 @@ private:
     double rotation_speed= 2.0;
     double translation_speed=1.0;
 
-
-    bool forward = true;
+    bool reset = false;
 
 };
 

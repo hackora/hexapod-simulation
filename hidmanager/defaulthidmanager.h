@@ -65,6 +65,7 @@ private slots:
   // Bjørn's changes
   virtual void                      heSelectHexapod();
   virtual void                      heReturnHexapodToStart();
+  virtual void                      heHexapodWalkForward();
 
 private:
   GMlib::Camera*                    findCamera( const QString& view_name ) const;
@@ -81,6 +82,7 @@ private:
   // Bjørn's changes
   Hexapod_controller*               _hexapod;
   bool                              _hexapod_selected = false;
+  Scenario*                         _scenario;
 
 
 
