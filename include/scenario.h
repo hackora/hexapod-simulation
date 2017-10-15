@@ -2,6 +2,7 @@
 #define SCENARIO_H
 
 class Simulator;
+class Hexapod_controller;
 
 #include "../application/gmlibwrapper.h"
 

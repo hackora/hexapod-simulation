@@ -16,13 +16,13 @@ public:
     void insert_to_scene(std::shared_ptr<Hexapod> hexapod);
 
 private:
-    GMlib::Scene&                                                       _scene;
-    Hexapod_controller                                            _hex_controller;
-    std::shared_ptr<Hexapod>                               _hexapod;
-    std::shared_ptr<GMlib::PPlane<float>>       _ground;
-    GMlib::GL::Texture                                               _texture;
-    GMlib::Material                                                     _material;
-    GMlib::PSurfTexVisualizer<float,3>*             _surface_visualizer ;
+    GMlib::Scene&                                       _scene;
+    Hexapod_controller                                  _hex_controller;
+    std::shared_ptr<Hexapod>                            _hexapod;
+    std::shared_ptr<GMlib::PPlane<float>>               _ground;
+    GMlib::GL::Texture                                  _texture;
+    GMlib::Material                                     _material;
+    GMlib::PSurfTexVisualizer<float,3>*                 _surface_visualizer ;
 
 };
 

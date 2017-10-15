@@ -35,6 +35,8 @@ void Simulator::setupSimulator(){
     _scene.insert(_ground.get());
     _hex_controller.addHexapod(_hexapod);
     _scene.insert(&_hex_controller);
+
+
 }
 
 void Simulator::insert_to_scene(std::shared_ptr<Hexapod> hexapod){

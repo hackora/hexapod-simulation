@@ -6,6 +6,9 @@
 
 #include <queue>
 
+#include "scenario.h"
+
+
 // local
 class GMlibWrapper;
 
@@ -59,6 +62,10 @@ private slots:
   virtual void                      heLeftMouseReleaseStuff();
   virtual void                      heOpenCloseHidHelp();
 
+  // Bjørn's changes
+  virtual void                      heSelectHexapod();
+  virtual void                      heReturnHexapodToStart();
+
 private:
   GMlib::Camera*                    findCamera( const QString& view_name ) const;
   float                             cameraSpeedScale( GMlib::Camera* cam ) const;
@@ -70,6 +77,11 @@ private:
   GMlibWrapper*                     _gmlib;
 
   std::queue<std::pair<const HidAction*,HidInputEvent::HidInputParams>>   _ogl_actions;
+
+  // Bjørn's changes
+  Hexapod_controller*               _hexapod;
+  bool                              _hexapod_selected = false;
+
 
 
 };

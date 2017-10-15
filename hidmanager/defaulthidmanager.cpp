@@ -9,6 +9,9 @@
 #include <gmParametricsModule>
 using namespace GMlib;
 
+// Hexapod controller
+#include "hexapod_controller.h"
+
 // qt
 #include <QGuiApplication>
 
@@ -369,6 +372,30 @@ void DefaultHidManager::heSelectAllObjects() {
     heSelectObjectTree( (*scene)[i] );
 }
 
+// Bjørn's changes
+void DefaultHidManager::heSelectHexapod() {
+
+    Scene *scene = this->scene();
+    for( int i = 0; i < scene->getSize(); ++i ) {
+
+        auto obj = (*scene)[i];
+
+        if( obj->getIdentity() == "Hexapod_controller") {
+
+            _hexapod = dynamic_cast<Hexapod_controller*>(obj);
+            _hexapod_selected = true;
+        }
+    }
+}
+
+void DefaultHidManager::heReturnHexapodToStart() {
+
+    if(_hexapod_selected == true)
+    {
+        _hexapod->return_to_start();
+    }
+}
+
 void DefaultHidManager::heSelectObject(const HidInputEvent::HidInputParams& params) {
 
   auto view_name = viewNameFromParams(params);
@@ -382,6 +409,7 @@ void DefaultHidManager::heSelectObject(const HidInputEvent::HidInputParams& para
   auto selected = obj->isSelected();
   heDeSelectAllObjects();
   obj->setSelected( !selected );
+
 }
 
 void DefaultHidManager::heSelectObjects(const HidInputEvent::HidInputParams& params) {
@@ -588,6 +616,14 @@ void DefaultHidManager::setupDefaultHidBindings() {
                         this, SLOT(heSelectObjects(HidInputEvent::HidInputParams)),
                         OGL_TRIGGER);
 
+  // Bjørn's changes
+  // Selecting Hexapod
+  QString ha_id_select_hexapod =
+          registerHidAction( "Selection",
+                             "Select Hexapod",
+                             "Select hexapod",
+                             this, SLOT(heSelectHexapod()) );
+
   // Object Interaction
   QString ha_id_objint_toggle_edit =
       registerHidAction( "Object interaction",
@@ -616,6 +652,14 @@ void DefaultHidManager::setupDefaultHidBindings() {
                          "Replot with \"low\" resolution",
                          this, SLOT(heReplotQuickLow()),
                          OGL_TRIGGER);
+
+  // Bjørn's changes
+  QString ha_id_return_to_start_hexapod =
+          registerHidAction( "Object interaction",
+                             "Return Hexapod to start",
+                             "Return Hexapod to starting position",
+                             this, SLOT(heReturnHexapodToStart()),
+                             OGL_TRIGGER);
 
 
 
@@ -659,6 +703,10 @@ void DefaultHidManager::setupDefaultHidBindings() {
   registerHidMapping( ha_id_objint_replot_low,            new KeyPressInput( Qt::Key_P, Qt::ControlModifier) );
   registerHidMapping( ha_id_sim_toggle,                   new KeyPressInput( Qt::Key_R ) );
   registerHidMapping( ha_id_render_toggle_shademode,      new KeyPressInput( Qt::Key_Z ) );
+
+  // Bjørn's changes
+  registerHidMapping( ha_id_select_hexapod,               new KeyPressInput( Qt::Key_H ) );
+  registerHidMapping( ha_id_return_to_start_hexapod,      new KeyPressInput( Qt::Key_Space ) );
 
   registerHidMapping( ha_id_objsel_select,                new MousePressInput( Qt::RightButton ) );
   registerHidMapping( ha_id_view_lock_to,                 new MousePressInput( Qt::RightButton, Qt::ControlModifier ) );

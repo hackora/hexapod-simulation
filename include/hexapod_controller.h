@@ -21,6 +21,8 @@ public:
     void addHexapod(std::shared_ptr<Hexapod> hexapod);
     void move_from_A_to_B();
 
+    void return_to_start();
+
 
 protected:
     void walk_forward(Gait gait, double dt);

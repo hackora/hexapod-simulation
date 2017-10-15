@@ -237,3 +237,9 @@ void Hexapod_controller::run_inverse_kinematicts(Gait gait){
         }
     }
 }
+
+void Hexapod_controller::return_to_start() {
+
+    std::cout<<"Returning the Hexapod to the starting position !"<<std::endl;
+
+}

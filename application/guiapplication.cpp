@@ -58,7 +58,7 @@ GuiApplication::~GuiApplication() {
   _window.releaseResources();
   _instance.release();
 
-  qDebug() << "Bye bye ^^, ~~ \"emerge --oneshot life\"";
+  qDebug() << "Hexapod.....regrets.....Nothing!";
 }
 
 void
