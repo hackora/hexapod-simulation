@@ -4,14 +4,20 @@ Hexapod_controller::Hexapod_controller(){
 
     tripod = std::make_shared<Gait>(gait_type::Tripod);
     wave = std::make_shared<Gait>(gait_type::Wave);
+    left_turn = std::make_shared<Gait>(gait_type::LeftTurn);
+    right_turn = std::make_shared<Gait>(gait_type::RightTurn);
     for(unsigned int i= 0; i<6;i++){
-        target_positions.push_back(GMlib::Vector<float,3>(0.0f,0.0f,0.0f));
+        walk_target_positions.push_back(GMlib::Vector<float,3>(0.0f,0.0f,0.0f));
+        turn_left_target_positions.push_back(GMlib::Vector<float,3>(0.0f,0.0f,0.0f));
+        turn_right_target_positions.push_back(GMlib::Vector<float,3>(0.0f,0.0f,0.0f));
         std::vector<IKAngles> temp_angles;
         for(unsigned int j =0; j<4;j++){
             auto angle = IKAngles(0.0f,0.0f,0.0f);
             temp_angles.push_back(angle);
         }
-        angles.push_back(temp_angles);
+        walk_angles.push_back(temp_angles);
+        turn_left_angles.push_back(temp_angles);
+        turn_right_angles.push_back(temp_angles);
     }
 
 }
@@ -19,7 +25,10 @@ Hexapod_controller::Hexapod_controller(){
 void Hexapod_controller::change_gait(int i) {
 
     if(i == 1) current_gait = *tripod.get();
-    else if(i == 2) current_gait = *wave.get();
+    else if(i == 2)
+        current_gait = *wave.get();
+    else if(i == 3) current_gait = *left_turn.get();
+    else if(i == 4) current_gait = *right_turn.get();
 }
 
 void Hexapod_controller::addHexapod(std::shared_ptr<Hexapod> hexapod){
@@ -28,7 +37,7 @@ void Hexapod_controller::addHexapod(std::shared_ptr<Hexapod> hexapod){
     legs = hexapod->getLegs();
 }
 
-void Hexapod_controller::update_target_positions(int i, int j ){
+void Hexapod_controller::update_target_positions(GMlib::APoint<float,3> &tip_position, std::vector<GMlib::Point<float,3>> &target_positions,int i, int j){
 
     switch(j){
     case 1:{
@@ -72,7 +81,7 @@ void Hexapod_controller::update_target_positions(int i, int j ){
     }
     }
 }
-void Hexapod_controller::update_angles(int i,int j){
+void Hexapod_controller::update_angles(std::vector<std::vector<IKAngles>> &angles,std::vector<GMlib::Point<float,3>> &target_positions,int i, int j){
 
     auto angle = legs[i]->inverseKinematics(target_positions[i]);
     angles[i][j]= angle ;
@@ -100,11 +109,11 @@ void Hexapod_controller::walk_forward(double dt){
 
         if(current_gait.id == Tripod){
 
-            auto coxaAngle =  angles[i][tripod_steps[i]-1].coxaAngle;
-            auto femurAngle = angles[i][tripod_steps[i]-1].femurAngle;
-            auto tibiaAngle = angles[i][tripod_steps[i]-1].tibiaAngle;
+            auto coxaAngle =  walk_angles[i][tripod_steps[i]-1].coxaAngle;
+            auto femurAngle = walk_angles[i][tripod_steps[i]-1].femurAngle;
+            auto tibiaAngle = walk_angles[i][tripod_steps[i]-1].tibiaAngle;
 
-            if(i !=0  && i !=5 ){
+            if(i !=0  && i !=5){
                 legs[i]->getJoints()[0]->rotate((coxaAngle +angle1)*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
                 legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 )*var, GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
                 legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3)*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
@@ -130,9 +139,9 @@ void Hexapod_controller::walk_forward(double dt){
 
         else if(current_gait.id == Wave){
 
-            auto coxaAngle =  angles[i][wave_steps[i]-1].coxaAngle;
-            auto femurAngle = angles[i][wave_steps[i]-1].femurAngle;
-            auto tibiaAngle = angles[i][wave_steps[i]-1].tibiaAngle;
+            auto coxaAngle =  walk_angles[i][wave_steps[i]-1].coxaAngle;
+            auto femurAngle = walk_angles[i][wave_steps[i]-1].femurAngle;
+            auto tibiaAngle = walk_angles[i][wave_steps[i]-1].tibiaAngle;
 
             if(i !=0  && i !=5  ){
                 legs[i]->getJoints()[0]->rotate((coxaAngle +angle1)*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
@@ -229,33 +238,71 @@ void Hexapod_controller::localSimulate(double dt) {
 
     if(!IK){
         run_inverse_kinematicts();
-        std::cout<<"Inverse Kinematics is run !"<<std::endl;
+        std::cout<<"Inverse Kinematics for walking is run !"<<std::endl;
         IK = true;
     }
 
     if(walking) walk(dt);
     if(running && current_gait.id == Tripod ) run(dt);
 
+    if(turning_left) turn_left(dt);
+    if(turning_right) turn_right(dt);
+
+
 }
 
 void Hexapod_controller::run_inverse_kinematicts(){
 
-    for(unsigned int i =0;i<legs.size();i++){
-        tip_position=   legs[i]->get_tip_pos();
-        auto count = 0;
-        auto index =tripod_steps[i];
-        if(current_gait.id == Wave)
-             index =wave_steps[i];
-        while(count <4){
-            update_target_positions(i,index);
-            update_angles(i,index-1);
-            count++;
-            if(index<4)
-                index++;
-            else
-                index =1;
+        for(unsigned int i =0;i<legs.size();i++){
+            walk_tip_position=   legs[i]->get_tip_pos();
+            turn_left_tip_position=   legs[i]->get_tip_pos();
+            turn_right_tip_position=   legs[i]->get_tip_pos();
+
+            {//left turn
+                auto count = 0;
+                auto index =tripod_left_turn_steps[i];
+                while(count <4){
+                    update_target_positions(turn_left_tip_position,turn_left_target_positions, i,index);
+                    update_angles(turn_left_angles,turn_left_target_positions,i,index-1);
+                    count++;
+                    if(index<4)
+                        index++;
+                    else
+                        index =1;
+                }
+
+            }
+            {//right turn
+                auto count = 0;
+                forward = false;
+                 auto index =tripod_right_turn_steps[i];
+                 while(count <4){
+                     update_target_positions(turn_right_tip_position,turn_right_target_positions, i,index);
+                     update_angles(turn_right_angles,turn_right_target_positions,i,index-1);
+                     count++;
+                     if(index<4)
+                         index++;
+                     else
+                         index =1;
+                 }
+                 forward = true;
+            }
+            {//walk
+                auto count = 0;
+                auto index =tripod_steps[i];
+                if(current_gait.id == Wave)
+                     index =wave_steps[i];
+                while(count <4){
+                    update_target_positions(walk_tip_position,walk_target_positions,i,index);
+                    update_angles(walk_angles,walk_target_positions,i,index-1);
+                    count++;
+                    if(index<4)
+                        index++;
+                    else
+                        index =1;
+                }
+            }
         }
-    }
 }
 
 void Hexapod_controller::return_to_start() {
@@ -305,5 +352,195 @@ void Hexapod_controller::return_to_start() {
 
             reset = true;
         }
+    }
+}
+
+void Hexapod_controller::turn_left(double dt){
+
+    auto var = tick/timespan;
+
+    if(rotate_body_left){
+        body->rotateGlobal(0.261799*var/50,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));   // 0.261799 radians = 15 degrees
+
+    }
+
+    else{
+        for(unsigned int i =0;i<6;i++){
+
+            GMlib::Angle angle1= (legs[i]->getJoints()[0]->getGlobalDir())
+                    .getAngle(legs[i]->leg_base->getGlobalDir());
+            GMlib::Angle angle2= (legs[i]->getJoints()[1]->getGlobalDir())
+                    .getAngle(legs[i]->getJoints()[0]->getGlobalDir());
+            GMlib::Angle angle3=  (legs[i]->getJoints()[2]->getGlobalDir())
+                    .getAngle(legs[i]->getJoints()[1]->getGlobalDir())-6.28319;
+
+
+            auto coxaAngle =  turn_left_angles[i][tripod_left_turn_steps[i]-1].coxaAngle;
+            auto femurAngle = turn_left_angles[i][tripod_left_turn_steps[i]-1].femurAngle;
+            auto tibiaAngle = turn_left_angles[i][tripod_left_turn_steps[i]-1].tibiaAngle;
+
+            if(angle2.getDeg()==0)
+                angle2 = 0.0;
+
+            if(i !=0  && i !=5 ){
+                legs[i]->getJoints()[0]->rotate((coxaAngle +angle1)*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 )*var, GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3)*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            }
+            else{
+                legs[i]->getJoints()[0]->rotate((coxaAngle -angle1)*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 )*var, GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                legs[i]->getJoints()[2]->rotate(((tibiaAngle+angle3))*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            }
+        }
+    }
+
+    if(tick< timespan-dt){
+        tick+=dt;
+    }
+    else {
+
+        if(rotate_body_left){
+            body_rotated_left =true;
+            rotate_body_left =false;
+            if(tripod_left_turn_steps[0] ==1)
+                turning_left = false;
+        }
+        else if(((tripod_left_turn_steps[0] ==3 && tripod_left_turn_steps[1] ==1) || (tripod_left_turn_steps[0] ==1 && tripod_left_turn_steps[1] ==3)) && !body_rotated_left ){
+            rotate_body_left = true;
+            body_rotated_left =true;
+        }
+        else if(tripod_left_turn_steps[0] ==1){
+            tripod_left_turn_steps[0] =4;
+            tripod_left_turn_steps[2] =4;
+            tripod_left_turn_steps[4] =2;
+            rotate_body_left = false;
+        }
+        else if(tripod_left_turn_steps[0] ==4){
+            tripod_left_turn_steps[0] =3;
+            tripod_left_turn_steps[2] =3;
+            tripod_left_turn_steps[4] =3;
+
+            tripod_left_turn_steps[1] =1;
+            tripod_left_turn_steps[3] =1;
+            tripod_left_turn_steps[5] =1;
+            rotate_body_left = false;
+            body_rotated_left =false;
+        }
+        else if(tripod_left_turn_steps[1] ==1){
+            tripod_left_turn_steps[1] =4;
+            tripod_left_turn_steps[3] =2;
+            tripod_left_turn_steps[5] =2;
+            rotate_body_left = false;
+        }
+        else{
+            tripod_left_turn_steps[0] =1;
+            tripod_left_turn_steps[2] =1;
+            tripod_left_turn_steps[4] =1;
+
+            tripod_left_turn_steps[1] =3;
+            tripod_left_turn_steps[3] =3;
+            tripod_left_turn_steps[5] =3;
+            rotate_body_left = false;
+            body_rotated_left =false;
+
+        }
+        tick =0.0;
+
+    }
+}
+
+void Hexapod_controller::turn_right(double dt){
+
+    auto var = tick/timespan;
+
+    if(rotate_body){
+        body->rotateGlobal(-0.261799*var/50,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));   // 0.261799 radians = 15 degrees
+
+    }
+
+    else{
+        for(unsigned int i =0;i<6;i++){
+
+            GMlib::Angle angle1= (legs[i]->getJoints()[0]->getGlobalDir())
+                    .getAngle(legs[i]->leg_base->getGlobalDir());
+            GMlib::Angle angle2= (legs[i]->getJoints()[1]->getGlobalDir())
+                    .getAngle(legs[i]->getJoints()[0]->getGlobalDir());
+            GMlib::Angle angle3=  (legs[i]->getJoints()[2]->getGlobalDir())
+                    .getAngle(legs[i]->getJoints()[1]->getGlobalDir())-6.28319;
+
+
+            auto coxaAngle =  turn_right_angles[i][tripod_right_turn_steps[i]-1].coxaAngle;
+            auto femurAngle = turn_right_angles[i][tripod_right_turn_steps[i]-1].femurAngle;
+            auto tibiaAngle = turn_right_angles[i][tripod_right_turn_steps[i]-1].tibiaAngle;
+
+            if(angle2.getDeg()==0)
+                angle2 = 0.0;
+
+            if(i !=0  && i !=5 && i !=4){
+                legs[i]->getJoints()[0]->rotate((coxaAngle +angle1)*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 )*var, GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                legs[i]->getJoints()[2]->rotate((tibiaAngle+angle3)*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            }
+            else{
+                legs[i]->getJoints()[0]->rotate((coxaAngle -angle1)*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                legs[i]->getJoints()[1]->rotate((-femurAngle-angle2 )*var, GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+                legs[i]->getJoints()[2]->rotate(((tibiaAngle+angle3))*var,GMlib::Vector<float,3>(0.0f, 0.0f, 1.0f));
+            }
+        }
+    }
+
+    if(tick< timespan-dt){
+        tick+=dt;
+    }
+    else {
+
+        if(rotate_body){
+            body_rotated =true;
+            rotate_body =false;
+            if(tripod_right_turn_steps[0] ==1)
+                turning_right = false;
+        }
+        else if(((tripod_right_turn_steps[0] ==3 && tripod_right_turn_steps[1] ==1) || (tripod_right_turn_steps[0] ==1 && tripod_right_turn_steps[1] ==3)) && !body_rotated ){
+            rotate_body = true;
+            body_rotated =true;
+        }
+        else if(tripod_right_turn_steps[0] ==1){
+            tripod_right_turn_steps[0] =4;
+            tripod_right_turn_steps[2] =4;
+            tripod_right_turn_steps[4] =2;
+            rotate_body = false;
+        }
+        else if(tripod_right_turn_steps[0] ==4){
+            tripod_right_turn_steps[0] =3;
+            tripod_right_turn_steps[2] =3;
+            tripod_right_turn_steps[4] =3;
+
+            tripod_right_turn_steps[1] =1;
+            tripod_right_turn_steps[3] =1;
+            tripod_right_turn_steps[5] =1;
+            rotate_body = false;
+            body_rotated =false;
+        }
+        else if(tripod_right_turn_steps[1] ==1){
+            tripod_right_turn_steps[1] =4;
+            tripod_right_turn_steps[3] =2;
+            tripod_right_turn_steps[5] =2;
+            rotate_body = false;
+        }
+        else{
+            tripod_right_turn_steps[0] =1;
+            tripod_right_turn_steps[2] =1;
+            tripod_right_turn_steps[4] =1;
+
+            tripod_right_turn_steps[1] =3;
+            tripod_right_turn_steps[3] =3;
+            tripod_right_turn_steps[5] =3;
+            rotate_body = false;
+            body_rotated =false;
+
+        }
+        tick =0.0;
+
     }
 }

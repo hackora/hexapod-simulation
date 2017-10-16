@@ -8,7 +8,7 @@ using seconds_type
     = std::chrono::duration<double>; // std::ratio<1,1> is implicit
                                      // default and means seconds
 
-enum gait_type{ Tripod, Wave };
+enum gait_type{ Tripod, Wave, LeftTurn,RightTurn };
 
 class Gait {
 
