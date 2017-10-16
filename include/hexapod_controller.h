@@ -20,26 +20,30 @@ public:
     void turn_left();
     void addHexapod(std::shared_ptr<Hexapod> hexapod);
     void move_from_A_to_B();
+    void change_gait(int i);
 
     void return_to_start();
 
     bool walking = false;
+    bool running = false;
     bool forward = true;
+    Gait current_gait = gait_type::Tripod;
 
 
 
 
 protected:
-    void walk_forward(Gait gait, double dt);
-    void walk_backward(Gait gait=Tripod, double dt =0.016);
-    void run(double dt =0.016);
+    void walk_forward(double dt);
+    void walk_backward(double dt);
+    void run(double dt);
+    void walk(double dt);
     void rotate_in_place();
 
 private:
 
     void localSimulate(double dt) override;
-    void run_inverse_kinematicts(Gait gait);
-    void update_target_positions(Gait gait, int i, int j);
+    void run_inverse_kinematicts();
+    void update_target_positions(int i, int j);
     void update_angles(int i, int j);
 
 

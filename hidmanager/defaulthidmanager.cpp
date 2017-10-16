@@ -400,6 +400,7 @@ void DefaultHidManager::heHexapodWalkForward() {
 
     if(_hexapod_selected) {
         _hexapod->walking = true;
+        _hexapod->running = false;
         _hexapod->forward = true;
     }
 }
@@ -408,7 +409,42 @@ void DefaultHidManager::heHexapodWalkBackward() {
 
     if(_hexapod_selected) {
         _hexapod->walking = true;
+        _hexapod->running = false;
         _hexapod->forward = false;
+    }
+}
+
+void DefaultHidManager::heHexapodRunForward() {
+
+    if(_hexapod_selected) {
+        _hexapod->walking = false;
+        _hexapod->running = true;
+        _hexapod->forward = true;
+    }
+}
+
+void DefaultHidManager::heHexapodRunBackward() {
+
+    if(_hexapod_selected) {
+        _hexapod->walking = false;
+        _hexapod->running = true;
+        _hexapod->forward = false;
+    }
+}
+
+void DefaultHidManager::heHexapodGaitTripod() {
+
+    if(_hexapod_selected) {
+
+        _hexapod->change_gait(true);
+    }
+}
+
+void DefaultHidManager::heHexapodGaitWave() {
+
+    if(_hexapod_selected) {
+
+        _hexapod->change_gait(false);
     }
 }
 
@@ -691,6 +727,34 @@ void DefaultHidManager::setupDefaultHidBindings() {
                              this, SLOT(heHexapodWalkBackward()),
                              OGL_TRIGGER);
 
+  QString ha_id_hexapod_run_forward =
+          registerHidAction( "Object interaction",
+                             "Run Hexapod forward one cycle",
+                             "Run Hexapod forward one step",
+                             this, SLOT(heHexapodRunForward()),
+                             OGL_TRIGGER);
+
+  QString ha_id_hexapod_run_backward =
+          registerHidAction( "Object interaction",
+                             "Run Hexapod backward one cycle",
+                             "Run Hexapod backward one step",
+                             this, SLOT(heHexapodRunBackward()),
+                             OGL_TRIGGER);
+
+  QString ha_id_gait_tripod =
+          registerHidAction( "Object interaction",
+                             "Changing Hexapod gait to Tripod",
+                             "Changing hexapod gait to tripod",
+                             this, SLOT(heHexapodGaitTripod()),
+                             OGL_TRIGGER);
+
+  QString ha_id_gait_wave =
+          registerHidAction( "Object interaction",
+                             "Changing Hexapod gait to Wave",
+                             "Changing hexapod gait to wave",
+                             this, SLOT(heHexapodGaitWave()),
+                             OGL_TRIGGER);
+
 
 
   // Rendering
@@ -739,6 +803,10 @@ void DefaultHidManager::setupDefaultHidBindings() {
   registerHidMapping( ha_id_return_to_start_hexapod,      new KeyPressInput( Qt::Key_Space ) );
   registerHidMapping( ha_id_hexapod_walk_forward,         new KeyPressInput( Qt::Key_W ) );
   registerHidMapping( ha_hexapod_walk_backward,           new KeyPressInput( Qt::Key_S ) );
+  registerHidMapping( ha_id_hexapod_run_forward,          new KeyPressInput( Qt::Key_Up ) );
+  registerHidMapping( ha_id_hexapod_run_backward,         new KeyPressInput( Qt::Key_Down ) );
+  registerHidMapping( ha_id_gait_tripod,                  new KeyPressInput( Qt::Key_1) );
+  registerHidMapping( ha_id_gait_wave,                    new KeyPressInput( Qt::Key_2) );
 
   registerHidMapping( ha_id_objsel_select,                new MousePressInput( Qt::RightButton ) );
   registerHidMapping( ha_id_view_lock_to,                 new MousePressInput( Qt::RightButton, Qt::ControlModifier ) );
