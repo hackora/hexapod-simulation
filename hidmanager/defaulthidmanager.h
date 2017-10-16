@@ -49,7 +49,7 @@ private slots:
   virtual void                      heReplotQuickMedium();
   virtual void                      heRotateSelectedObjects( const HidInputEvent::HidInputParams& params );
   virtual void                      heScaleSelectedObjects( const HidInputEvent::HidInputParams& params );
-  virtual void                      heSelectAllObjects();
+//  virtual void                      heSelectAllObjects();
   virtual void                      heSelectObject( const HidInputEvent::HidInputParams& params );
   virtual void                      heSelectObjects( const HidInputEvent::HidInputParams& params );
   virtual void                      heSelectObjectTree( GMlib::SceneObject* obj );
@@ -69,8 +69,12 @@ private slots:
   virtual void                      heHexapodWalkBackward();
   virtual void                      heHexapodRunForward();
   virtual void                      heHexapodRunBackward();
+  virtual void                      heHexapodTurnLeft();
+  virtual void                      heHexapodTurnRight();
   virtual void                      heHexapodGaitTripod();
   virtual void                      heHexapodGaitWave();
+  virtual void                      heHexapodGaitLeftTurn();
+  virtual void                      heHexapodGaitRightTurn();
 
 private:
   GMlib::Camera*                    findCamera( const QString& view_name ) const;

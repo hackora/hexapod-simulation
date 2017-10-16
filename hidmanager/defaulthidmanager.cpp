@@ -365,12 +365,12 @@ void DefaultHidManager::heScaleSelectedObjects(const HidInputEvent::HidInputPara
   }
 }
 
-void DefaultHidManager::heSelectAllObjects() {
+//void DefaultHidManager::heSelectAllObjects() {
 
-  Scene *scene = this->scene();
-  for( int i = 0; i < scene->getSize(); ++i )
-    heSelectObjectTree( (*scene)[i] );
-}
+//  Scene *scene = this->scene();
+//  for( int i = 0; i < scene->getSize(); ++i )
+//    heSelectObjectTree( (*scene)[i] );
+//}
 
 // Bjørn's changes
 void DefaultHidManager::heSelectHexapod() {
@@ -402,6 +402,8 @@ void DefaultHidManager::heHexapodWalkForward() {
         _hexapod->walking = true;
         _hexapod->running = false;
         _hexapod->forward = true;
+        _hexapod->turning_right = false;
+        _hexapod->turning_left = false;
     }
 }
 
@@ -409,6 +411,30 @@ void DefaultHidManager::heHexapodWalkBackward() {
 
     if(_hexapod_selected) {
         _hexapod->walking = true;
+        _hexapod->running = false;
+        _hexapod->forward = false;
+        _hexapod->turning_right = false;
+        _hexapod->turning_left = false;
+    }
+}
+
+void DefaultHidManager::heHexapodTurnLeft(){
+
+    if(_hexapod_selected) {
+        _hexapod->turning_left = true;
+        _hexapod->turning_right = false;
+        _hexapod->walking = false;
+        _hexapod->running = false;
+        _hexapod->forward = false;
+    }
+}
+
+void DefaultHidManager::heHexapodTurnRight(){
+
+    if(_hexapod_selected) {
+        _hexapod->turning_right = true;
+        _hexapod->walking = false;
+        _hexapod->turning_left = false;
         _hexapod->running = false;
         _hexapod->forward = false;
     }
@@ -420,6 +446,8 @@ void DefaultHidManager::heHexapodRunForward() {
         _hexapod->walking = false;
         _hexapod->running = true;
         _hexapod->forward = true;
+        _hexapod->turning_right = false;
+        _hexapod->turning_left = false;
     }
 }
 
@@ -429,6 +457,8 @@ void DefaultHidManager::heHexapodRunBackward() {
         _hexapod->walking = false;
         _hexapod->running = true;
         _hexapod->forward = false;
+        _hexapod->turning_right = false;
+        _hexapod->turning_left = false;
     }
 }
 
@@ -436,7 +466,7 @@ void DefaultHidManager::heHexapodGaitTripod() {
 
     if(_hexapod_selected) {
 
-        _hexapod->change_gait(true);
+        _hexapod->change_gait(1);
     }
 }
 
@@ -444,9 +474,26 @@ void DefaultHidManager::heHexapodGaitWave() {
 
     if(_hexapod_selected) {
 
-        _hexapod->change_gait(false);
+        _hexapod->change_gait(2);
     }
 }
+
+void DefaultHidManager::heHexapodGaitLeftTurn() {
+
+    if(_hexapod_selected) {
+
+        _hexapod->change_gait(3);
+    }
+}
+
+void DefaultHidManager::heHexapodGaitRightTurn() {
+
+    if(_hexapod_selected) {
+
+        _hexapod->change_gait(4);
+    }
+}
+
 
 void DefaultHidManager::heSelectObject(const HidInputEvent::HidInputParams& params) {
 
@@ -509,8 +556,8 @@ void DefaultHidManager::heToggleSelectAllObjects() {
 
   if( scene()->getSelectedObjects().getSize() > 0 )
     heDeSelectAllObjects();
-  else
-    heSelectAllObjects();
+//  else
+//    heSelectAllObjects();
 }
 
 void DefaultHidManager::heZoom(const HidInputEvent::HidInputParams& params) {
@@ -648,11 +695,23 @@ void DefaultHidManager::setupDefaultHidBindings() {
                         this, SLOT(heRotateSelectedObjects(HidInputEvent::HidInputParams)) );
 
   // Object Selection
-  QString ha_id_objsel_toggle_all =
+//  QString ha_id_objsel_toggle_all =
+//      registerHidAction("Object selection",
+//                        "Toggle: (de)select all objects",
+//                        "Toggle selection on all objects",
+//                        this, SLOT(heToggleSelectAllObjects()) );
+
+  QString heHexapodTurnLeft =
       registerHidAction("Object selection",
-                        "Toggle: (de)select all objects",
-                        "Toggle selection on all objects",
-                        this, SLOT(heToggleSelectAllObjects()) );
+                        "Rotate Hexapod Left",
+                        "Rotate Hexapod Left",
+                        this, SLOT(heHexapodTurnLeft()) );
+
+  QString heHexapodTurnRight =
+      registerHidAction("Object selection",
+                        "Rotate Hexapod Right",
+                        "Rotate Hexapod Right",
+                        this, SLOT(heHexapodTurnRight()) );
 
   QString ha_id_objsel_select =
       registerHidAction("Object selection",
@@ -755,6 +814,20 @@ void DefaultHidManager::setupDefaultHidBindings() {
                              this, SLOT(heHexapodGaitWave()),
                              OGL_TRIGGER);
 
+  QString ha_id_gait_left_turn =
+          registerHidAction( "Object interaction",
+                             "Changing Hexapod gait to LeftTurn",
+                             "Changing hexapod gait to LeftTurn",
+                             this, SLOT(heHexapodGaitLeftTurn()),
+                             OGL_TRIGGER);
+
+  QString ha_id_gait_right_turn =
+          registerHidAction( "Object interaction",
+                             "Changing Hexapod gait to RightTurn",
+                             "Changing hexapod gait to RightTurn",
+                             this, SLOT(heHexapodGaitRightTurn()),
+                             OGL_TRIGGER);
+
 
 
   // Rendering
@@ -790,7 +863,8 @@ void DefaultHidManager::setupDefaultHidBindings() {
 
 
   //// Set up initial mapping
-  registerHidMapping( ha_id_objsel_toggle_all,            new KeyPressInput( Qt::Key_A ) );
+  registerHidMapping( heHexapodTurnLeft,                    new KeyPressInput( Qt::Key_A ) );
+  registerHidMapping( heHexapodTurnRight,                  new KeyPressInput( Qt::Key_D) );
   registerHidMapping( ha_id_objint_toggle_edit,           new KeyPressInput( Qt::Key_E ) );
   registerHidMapping( ha_id_objint_replot_high,           new KeyPressInput( Qt::Key_P, Qt::ShiftModifier ) );
   registerHidMapping( ha_id_objint_replot_med,            new KeyPressInput( Qt::Key_P ) );
@@ -799,14 +873,16 @@ void DefaultHidManager::setupDefaultHidBindings() {
   registerHidMapping( ha_id_render_toggle_shademode,      new KeyPressInput( Qt::Key_Z ) );
 
   // Bjørn's changes
-  registerHidMapping( ha_id_select_hexapod,               new KeyPressInput( Qt::Key_H ) );
+  registerHidMapping( ha_id_select_hexapod,               new KeyPressInput( Qt::Key_X ) );
   registerHidMapping( ha_id_return_to_start_hexapod,      new KeyPressInput( Qt::Key_Space ) );
   registerHidMapping( ha_id_hexapod_walk_forward,         new KeyPressInput( Qt::Key_W ) );
   registerHidMapping( ha_hexapod_walk_backward,           new KeyPressInput( Qt::Key_S ) );
   registerHidMapping( ha_id_hexapod_run_forward,          new KeyPressInput( Qt::Key_Up ) );
   registerHidMapping( ha_id_hexapod_run_backward,         new KeyPressInput( Qt::Key_Down ) );
-  registerHidMapping( ha_id_gait_tripod,                  new KeyPressInput( Qt::Key_1) );
-  registerHidMapping( ha_id_gait_wave,                    new KeyPressInput( Qt::Key_2) );
+  registerHidMapping( ha_id_gait_tripod,                  new KeyPressInput( Qt::Key_H) );
+  registerHidMapping( ha_id_gait_wave,                    new KeyPressInput( Qt::Key_J) );
+  registerHidMapping( ha_id_gait_left_turn,                  new KeyPressInput( Qt::Key_K) );
+  registerHidMapping( ha_id_gait_right_turn,                    new KeyPressInput( Qt::Key_L) );
 
   registerHidMapping( ha_id_objsel_select,                new MousePressInput( Qt::RightButton ) );
   registerHidMapping( ha_id_view_lock_to,                 new MousePressInput( Qt::RightButton, Qt::ControlModifier ) );
