@@ -357,6 +357,8 @@ void Hexapod_controller::return_to_start() {
 
 void Hexapod_controller::turn_left(double dt){
 
+    reset = false;
+
     auto var = tick/timespan;
 
     if(rotate_body_left){
@@ -451,6 +453,8 @@ void Hexapod_controller::turn_left(double dt){
 }
 
 void Hexapod_controller::turn_right(double dt){
+
+    reset = false;
 
     auto var = tick/timespan;
 

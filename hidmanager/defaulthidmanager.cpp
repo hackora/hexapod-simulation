@@ -873,16 +873,16 @@ void DefaultHidManager::setupDefaultHidBindings() {
   registerHidMapping( ha_id_render_toggle_shademode,      new KeyPressInput( Qt::Key_Z ) );
 
   // Bjørn's changes
-  registerHidMapping( ha_id_select_hexapod,               new KeyPressInput( Qt::Key_X ) );
+  registerHidMapping( ha_id_select_hexapod,               new KeyPressInput( Qt::Key_H ) );
   registerHidMapping( ha_id_return_to_start_hexapod,      new KeyPressInput( Qt::Key_Space ) );
   registerHidMapping( ha_id_hexapod_walk_forward,         new KeyPressInput( Qt::Key_W ) );
   registerHidMapping( ha_hexapod_walk_backward,           new KeyPressInput( Qt::Key_S ) );
   registerHidMapping( ha_id_hexapod_run_forward,          new KeyPressInput( Qt::Key_Up ) );
   registerHidMapping( ha_id_hexapod_run_backward,         new KeyPressInput( Qt::Key_Down ) );
-  registerHidMapping( ha_id_gait_tripod,                  new KeyPressInput( Qt::Key_H) );
-  registerHidMapping( ha_id_gait_wave,                    new KeyPressInput( Qt::Key_J) );
-  registerHidMapping( ha_id_gait_left_turn,                  new KeyPressInput( Qt::Key_K) );
-  registerHidMapping( ha_id_gait_right_turn,                    new KeyPressInput( Qt::Key_L) );
+  registerHidMapping( ha_id_gait_tripod,                  new KeyPressInput( Qt::Key_1) );
+  registerHidMapping( ha_id_gait_wave,                    new KeyPressInput( Qt::Key_2) );
+  registerHidMapping( ha_id_gait_left_turn,               new KeyPressInput( Qt::Key_K) );
+  registerHidMapping( ha_id_gait_right_turn,              new KeyPressInput( Qt::Key_L) );
 
   registerHidMapping( ha_id_objsel_select,                new MousePressInput( Qt::RightButton ) );
   registerHidMapping( ha_id_view_lock_to,                 new MousePressInput( Qt::RightButton, Qt::ControlModifier ) );
